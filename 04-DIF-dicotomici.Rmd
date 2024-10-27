@@ -1,0 +1,213 @@
+# Differential Item Functioning per modelli dicotomici
+
+All'interno del framework dell'Item Response Theory (IRT) è anche possibile studiare l'invarianza di una scala a livello dell'Item, tramite la procedura del Differential Item Functioning (DIF). Esitono diversi approcci al DIF, fra i quali il metodo Mantzel-Haenszel ([Mantzel, & Haenszel, 1959](https://pubmed.ncbi.nlm.nih.gov/13655060/); [Holland, & Thayer,1988](https://psycnet.apa.org/record/1988-97024-009)), la regressione logistica ([Swaminathan, & Rogers, 1990](#0){style="font-size: 12pt;"}) e il Likelihood Ratio Test ([Thissen et al., 1988](#0){style="font-size: 12pt;"}). Di seguito approfondiremo quest'ultimo.
+
+Per illustrare il DIF utilizzeremo il database TEST.DIC. Condurremo lo studio dell'invarianza di genere utilizzando la variabile sex (1=male; 2=female).
+
+Per prima cosa selezioniamo la variabile gruppo.
+
+```{r}
+GRUPPO<-as.factor(TEST.DIC$sex) #var. gruppo
+```
+
+Selezioniamo poi gli item sui quali condurre l'invarianza.
+
+```{r}
+item.DIF<-TEST.DIC[,3:9]  #item per DIF
+```
+
+Definiamo poi la struttura fattoriale, come già fatto in precedenza.
+
+```{r}
+fct.str.DIF <- mirt.model('F1 = 1-7')
+```
+
+Infine, creiamo un oggetto contenente il tipo di modello, per non doverlo inserire in ogni passaggio.
+
+```{r}
+tipo.mod<-'2PL'  
+```
+
+#### Stima dei parametri nei due gruppi
+
+Procediamo alla stima dei parametri degli item nel gruppo di maschi `(GRUPPO==1)`.
+
+```{r}
+
+mod.group1<-filter(item.DIF, GRUPPO=='1')%>%   #inserire etichetta primo gruppo
+  mirt(model=fct.str.DIF, itemtype = tipo.mod) #es: GRUPPO == '1'
+
+coef(mod.group1, simplify=TRUE, IRTpars=T)    #stampa dei parametri
+
+```
+
+Stimiamo poi i parametri nel gruppo delle femmine `(GRUPPO==2)`.
+
+```{r}
+
+mod.group2<-filter(item.DIF, GRUPPO=='2')%>% #inserire etichetta secondo gruppo
+  mirt(model=fct.str.DIF, itemtype = tipo.mod) #es: GRUPPO == '2'
+
+coef(mod.group2, simplify=TRUE, IRTpars=T)    #stampa dei parametri
+```
+
+#### Primo step della procedura di purificazione
+
+Il primo step della procedura di purificazione prevede di stimare un modello di partenza dove tutti i parametri degli item sono vincolati ad essere uguali nei due gruppi. Inoltre, le medie e le varianze vengono fissate a 0 e 1 nel primo gruppo (gruppo di riferimento) e lasciate libere di essere stimate nel secondo gruppo (gruppo focale).
+
+La funzione che permette di creare questo modello è denominata `multiplegroup()`. L'argomento invariance() permette di impostare i vincoli sopra esposti. Tramite `colnames(item.DIF)` imponiamo i vincoli ai parametri degl item, mentre tramite `'free_means'` e `'free_var'` impostiamo i vincoli alle medie e alle varianze.
+
+```{r}
+
+mod.dif.1<- multipleGroup(item.DIF,model= fct.str.DIF,
+                       itemtype = tipo.mod, 
+                       group =GRUPPO,SE=TRUE, 
+                       invariance = c(colnames(item.DIF),
+                                      'free_means', 'free_var'))
+```
+
+A partire da questo modello, è possibile stimare il DIF al primo step di interazione tramite la funzione `DIF()`. Impostando la voce scheme='drop', procediamo rimuovendo i vincoli degli item uno ad uno per essere confrontati tramite il Chi-Quadro nei due gruppi.
+
+La stima del DIF viene eseguita prima nei parametri relativi alla capacità discriminativa (*a*), inserendo la voce `which.par = 'a1'` (Il parametro "a" è indicato sempre come "a1" in mirt).
+
+```{r}
+
+DIF(mod.dif.1,which.par = 'a1',
+    simplify = TRUE, scheme = 'drop')
+```
+
+Per proseguire poi con la stima del DIF relativo alla location. In questo caso, in which.par inseriremo il parametro *d* (*easiness)* e non *b*, poiché è il parametro di default utilizzato da mirt per la location.
+
+```{r}
+DIF(mod.dif.1,which.par = 'd',
+    simplify = TRUE, scheme = 'drop')
+```
+
+Utilizzando come criterio p\<.01, nessun item mostrava DIF in a. In b, invece, sia l'item 3 ($X^2$(1)=6.49 , *p* = .008) che l'item 6 ($X^2$(1)=10.32 , *p* \< .001) risultavano avere un valore di *p* associato minore della soglia fissata .
+
+#### Secondo step della procedura di purificazione
+
+Il secondo step della procedura di purificazione serve per verificare l'effettiva presenza di DIF negli item che hanno manifestato DIF al primo step.
+
+Gli item senza DIF sono denominati item ancora e vengono fissati uguali nei due gruppi. Definiamo quindi un oggetto che contenga gli item ancora. In questo caso, gli item ancora sono il primo, il secondo, il quarto e il quinto. Li inseriremo usando la loro posizione ordinale nell'oggetto denominato `item.ancora`.
+
+```{r}
+#Definisco gli item ancora 
+itemnames <- colnames(item.DIF)
+item.ancora<- itemnames[c(1,2,4,5,7)] #Inserire gli item ancora
+print(item.ancora)
+```
+
+Proseguiamo poi creando un oggetto che contenga gli item candidati, ovvero gli item che saranno lasciati liberi di variare nei due gruppi per verificare l'eventuale presenza di DIF.
+
+```{r}
+#Definisco gi item da testare (candidati)
+item.candidati<- c(3,6)  #Inserire gli item candidati
+print(item.candidati)
+
+```
+
+Ora dobbiamo creare un nuovo modello tramite la funzione `multiplegroup()` con i seguenti vincoli allinterno dell'argomento `invariance=c()`:
+
+-   i parametri degli item ancora fissati ad essere uguali nei due gruppi;
+
+-   le medie e le varianze fissate a 0 e 1 nel gruppo di rifermineto e libere di essere stimate nel gruppo focale.
+
+```{r}
+mod.dif.2<-multipleGroup(item.DIF,model= fct.str.DIF,
+              itemtype = tipo.mod, 
+              group =GRUPPO,SE=TRUE, 
+              invariance = c(item.ancora, 'free_means', 'free_var'))
+```
+
+Procediamo poi con la stima del DIF. In questo caso, useremo lo schema 'add' in cui i parametri degli item vengono confrontati fra i due gruppi uno alla volta per poi essere vincolati e procedere con il seguente parametro.
+
+Come prima, analizziamo il DIF in *a*.
+
+```{r}
+#DIF in a al secondo step di purificazione
+
+DIF(mod.dif.2,which.par = 'a1',
+    simplify = TRUE, scheme = 'add', items2test = item.candidati)
+```
+
+Per poi proseguire analizzando il DIF in b.
+
+```{r}
+#DIF in b (d) al secondo step di purificazione
+
+DIF(mod.dif.2,which.par = 'd',
+    simplify = TRUE, scheme = 'add', items2test = item.candidati)
+```
+
+Al secondo step di purificazione, solo l'item 6 risultava avere DIF nel parametro b ($X^2$(1)=7.43 , *p* \< .01), ad indicare che l'item era invariante per genere, poiché risultava essere più facile per i maschi (*b*=-1.02) rispetto alle femmine (*b*=-.59).
+
+Questo può essere anche analizzato graficamente tramite la funzione `itemplot()` e inserendo nell'argomento `item=` la posizione ordinale dell'item che si desidera visualizzare.
+
+```{r}
+
+itemplot(mod.dif.2, item=6,   #Inserire l' item da visualizzare
+         type='trace', theta_lim = c(-3, 3)) 
+```
+
+#### Effect size del DIF
+
+Come ultimo aspetto, è possibile studiare l'effect size del DIF utilizzando la procedura proposta da [Meade (2010)](https://pubmed.ncbi.nlm.nih.gov/20604592/).
+
+**Effect size a livello di item**
+
+In primo luogo si valuta l'effect size a livello di item tramite la funzione `empirical_ES()`.
+
+```{r}
+#Effect size al livello degli item
+
+#Indici
+empirical_ES(mod.dif.2)             
+#Grafici
+empirical_ES(mod.dif.2, plot = TRUE)
+```
+
+Fra gli indici più utilizzati per lo studio del DIF vi sono i seguenti (Per un'analisi approdondita degli indici di Effect Size, consultare la guida di Meade).
+
+[Signed Item Difference in the Sample (SIDIS)]{.underline}
+
+Rappresenta la differenza media, nella metrica dell'item, della differenza fra i due gruppi.
+
+[Unsigned Item Difference in the Sample (UIDIS)]{.underline}
+
+Rappresenta la differenza media, nella metrica dell'item, della differenza fra i due gruppi in valore assoluto. Il valore assoluto permette di osservare la differenza media impedendo l'effetto cancellazione lungo il tratto di theta.
+
+Utile è un confronto fra gli indici SIDIS e UIDIS. Se sono uguali, il DIF è di natura uniforme, quindi un gruppo ha livelli più alti dell'altro gruppo lungo tutto il continuum di theta (DIF uniforme). Se UIDIS è maggiore di SIDIS allora c'è effetto cancellazione lungo il continuum di theta, ad indicare che un gruppo non ha sempre punteggi più alti dell'altro (DIF non uniforme) e va analizzato il grafico per comprendere in quale regione di theta è presente il DIF.
+
+[Expected score standardized difference (ESSD)]{.underline}
+
+Rappresenta la differenza fra la media degli Espected Score del primo gruppo con quelli del secondo gruppo, divisi per la deviazione standard della distribuzione. Si interpreta con i criteri del *d di* [Cohen (1988)](https://www.taylorfrancis.com/books/mono/10.4324/9780203771587/statistical-power-analysis-behavioral-sciences-jacob-cohen) .
+
+**Effect size a livello di test**
+
+Per valutare l'impatto complessvo del DIF sulla scala, possiamo utilizzare degli indici forniti sempre da Meade (2010). Useremo, come sopra, la funzione `empirical_ES()`, introducendo però la voce `DIF=FALSE`.
+
+```{r}
+#Effect size al livello del test
+
+#ndici
+empirical_ES(mod.dif.2, DIF = FALSE)     
+#Grafici
+empirical_ES(mod.dif.2, DIF = FALSE, plot = TRUE) 
+```
+
+I tre indici presentati di seguito sono l'applicazione di quanto appena visto per l'item a livello di test.
+
+[Signed Test Difference in the Sample (STDIS)]{.underline}
+
+Differenza media, nella metrica del test, nella risposta fra i due gruppi.
+
+[Unsigned Test Difference in the Sample (UTDIS)]{.underline}
+
+Differenza media, nella metrica del test, nella risposta fra i due gruppi senza l'effetto cancellazione.
+
+Se messa in confronto con STIDS, è possibile cogliere la presenza di DIF uniforme/ non uniforme a livello di test.
+
+[Expected test score standardized difference (ETSSD)]{.underline}
+
+Rappresenta la differenza fra la media degli Espected Test Score nei due gruppi, diviso per la deviazione standard. Si interpreta con i criteri del *d di* [Cohen (1988)](https://www.taylorfrancis.com/books/mono/10.4324/9780203771587/statistical-power-analysis-behavioral-sciences-jacob-cohen) .

@@ -1,0 +1,15 @@
+# Introduzione alla guida
+
+La presente guida è pensata come introduzione alla calibrazione e allo scoring di strumenti psicologici tramite l'Item Response Theory (IRT). A questo scopo, verrà utilizzato l'ambiente di siviluppo R e il pacchetto mirt ([Chalmers, 2012](https://doi.org/10.18637/jss.v048.i06)). La guida completa all'utilizzo del pacchetto può essere scaricata da [qui](https://cran.r-project.org/web/packages/mirt/mirt.pdf).
+
+Sebbene il pacchetto mirt permetta di effettuare la calibrazione sia di strumenti unidimensionali che multidimensionali, questa guida sarà focalizzata sui modelli unidimensionali. Per quanto riguarda gli strumenti undimensionali dicotomici, verranno utilizzati i seguenti modelli:
+
+-   ad un parametro (1PL; Birnbaum, 1968; [Hambleton et al., 1991](https://psycnet.apa.org/record/1991-98425-000));
+
+-   due parametri (2PL; Birnbaum, 1968);
+
+Verrà, inoltre, fatto un accenno al modello 3PL (Birnbaum, 1968).
+
+Per quanto riguarda gli strumenti unidimensionali politomici, verrà utilizzato il modello graded ([Samejima, 1968](https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1968.tb00153.x)).
+
+Verrà poi mostrato come condurre il Differential Item Functioning (DIF; [Thissen et al., 1988](#0){style="font-size: 12pt;"}). Infine, verrà mostrato come effettuare lo scoring di uno strumento utilizzando l' Expected a Posteriori Score (EAP; [Bock e Mislevy, 1982](https://doi.org/10.1177/014662168200600405)).

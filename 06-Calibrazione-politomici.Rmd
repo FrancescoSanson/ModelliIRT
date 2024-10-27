@@ -1,0 +1,149 @@
+# Calibrazione di strumenti unidimensionali con item politomici
+
+In questa sezione tratteremo gli strumenti unidimensionali con item politomici, ovvero quegli strumenti dove tutti gli item misurano lo stesso tratto latente (theta) e le risposte vengono raccolte tramite una scala Likert (ovvero, categorie di risposta ordinate).
+
+Il modello maggiormente utilizzato per la calibrazione di strumenti politomici con risposte ordinate è il graded model ([Samejima, 1968](https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1968.tb00153.x)). In questo modello, ogni item ha la propria capacità discriminativa (indicata sempre con "a1"). Inoltre, ogni item ha un numero di parametri di location uguali al numero di punti della scala Likert meno 1. Ad esempio, un item raccolto sul scala Likert a 5 punti, avrà 4 parametri di location, denominati $b_1, b_2, b_3$ e $b_4$. Questi parametri sono denominati "soglie" e rappresentano il punto esatto lungo il continuum di theta dove la probabilità di dare la risposta che precede la soglia o la risposta che segue la soglia si equivalgono. Ad esempio la soglia $b_4$ è uguale a 1.59, ciò significa che una persona con livello di theta di 1.59 ha la stessa probabilità di dare le risposte 4 e 5 alla scala Likert. Una persona con theta di 1.58 avrà una maggior probabilità di dare la risposta 4, mentre una persona con theta di 1.60 avrà invece una probabilità maggiore di dare la risposta 5.
+
+#### Caricare i dati
+
+Per mostrare la calibrazione di uno strumento tramite il graded model, usaremo come esempio un altro database di prova (*denominato* TEST.POLY) gentilmente messo a disposizione dal Laboratorio di Psicometria dell'Università di Firenze. Il database contiene le risposte di 790 persone, tramite sei item su scala Likert a 5 punti (1=Molto raramente; 5=Molto spesso).
+
+I dati sono scaricabili da [qui](https://drive.google.com/file/d/1pCxq3HV-t7pTHEtu7X5BI4YO9XcNkcM4/view?usp=sharing).
+
+Per caricare i dati, come già visto, carichiamo la libreria haven (i dati sono in .sav) e importiamo il database TEST.POLY.sav tramite la funzione `read_sav()` del paccheto haven.
+
+```{r include=FALSE}
+library(haven)
+TEST.POLY<-read_sav("C:/Users/franc/OneDrive/Desktop/TEST.POLY.sav")
+```
+
+```{r echo=TRUE, eval=FALSE}
+library(haven)
+TEST.POLY<-read_sav("C:/Users/.../TEST.POLY.sav")
+```
+Poiché nel database comapre anche la variabile relativa al sesso dei partecipanti, procediamo a selezionare solo gli item per la calibrazione.
+
+```{r}
+#Seleziono solo gli item della scala TEST.POLY
+
+TEST.POLY.item <-TEST.POLY[,2:7]
+```
+
+#### Calibrazione modello graded
+
+In primo luogo, bisogna richiamare le librerie (solo se è stato chiuso RStudio dall'ultima sessione).
+
+```{r}
+library(mirt)
+library(tidyverse)
+```
+
+Come già visto per la calibrazione di modelli dicotomici, il primo passaggio consiste nel definire la struttura fattoriale tramite la funzione `mirt.model()`. Dato che il modello è unidimensionale, tutti gli item satureranno sul medesimo fattore (F1=1-6).
+
+```{r}
+#Struttura fattoriale TEST.POLY modello graded
+
+fct.str.graded <- mirt.model('F1 = 1-6')
+```
+
+Per calibrare il modello, utilizziamo sempre la funzione `mirt()`. All'interno dell'argomento model inseriremo la struttura fattoriale appena creata (`model=fct.str.graded)`. L'argomento `itemtype` va invece impostato sul modello 'graded'.
+
+```{r message=TRUE, warning=TRUE}
+#Calibrazione modello graded
+
+MOD.graded <- mirt(data=TEST.POLY.item, 
+                   model=fct.str.graded, itemtype = "graded")
+```
+
+##### Verifica delle assunzioni
+
+Verifichiamo ora l'assunzione di unidimensionalità tramite la statistica di Local Dependence (LD, [Chen & Thissen, 1997](https://doi.org/10.2307/1165285)) visualizzabile tramite la funzione `residuals()`.
+
+Procediamo poi osservando anche le saturazioni degli item sul fattore con la funzione `summary()`.
+
+```{r}
+
+#Assunzioni graded
+
+residuals(MOD.graded,type='LD',df.p=TRUE) #LD per il modello greaded
+
+summary(MOD.graded) #Saturazioni 1PL
+```
+
+#### Fit del modello e degli item
+
+Verificate le assunzioni, è possibile procedere con il fit, prima del modello e poi degli item.
+
+Nel caso del fit del modello, utilizzeremo un'altra variante della statistica $M_2$ ([Maydeu -Olivares, & Joe, 2006](#0); [Maydeu-Olivares, & Joe, 2014](#0)), ovvero la stastistica C2 ([Cai, & Monroe, 2014](#0)). A differenza della statistica $M_2$, la statistica C2 può essere utilizzata anche con pochi item con tante categorie di risposta.
+
+Per ottenere la statistica C2 useremo sempre la funzione `M2()`, inserendo però come argomento `type='C2'`.
+
+```{r}
+
+M2(MOD.graded,type = 'C2') #Fit Globale graded
+```
+
+Proseguiamo poi con il fit fi ogni item tramite la statistica $S-X^2$ ([Orlando & Thissen, 2000](https://doi.org/10.1177/01466216000241003)), utilizzando come soglia *p\<* .01.
+
+```{r}
+
+itemfit(MOD.graded, fit_stats = "S_X2", na.rm = T) #fit degli item nel graded
+```
+
+#### Parametri degli item e Response **Characteristic** Curves (RCCs)
+
+Tramite la funzione `coef()` richiediamo i parametri del modello.
+
+```{r}
+
+COEF.graded<-coef(MOD.graded, IRTpars=TRUE, simplify=TRUE)
+COEF.graded
+```
+
+Proseguiamo poi con l'ispezione delle RCCs tramite la funzione `itemplot()`. Poiché è stato impostato il modello graded, impostando l'argomento type='trace', otterremo le RCCs. Tramite l'argomento `item` è possibile selezionare le RCCs dell'item che si desidera visualizzare. Nell'esempio sottostante, l'item scelto è il primo (`item=1`).
+
+```{r}
+
+itemplot(MOD.graded,type = 'trace', item =1) #RCC del primo item
+```
+
+Se si desidera ottenere le RCCs di tutti gli item del test con un solo comando, si può utilizzare un ciclo `for()`.
+
+```{r}
+
+# Stampa di tutte le RCCs di tutti gli item del test  
+
+for(i in 1:extract.mirt(MOD.graded, "nitems")) 
+  {plot(MOD.graded, type = 'trace',which.items = i,
+        facet_items=TRUE, theta_lim = c(-3, 3))} %>%    
+  print()
+```
+
+#### Item Information Functions (IIFs) e Test Information Function (TIF)
+
+L'informazione apportata da ogni singolo item può essere visualizzata sempre con il comando `itemplot()`, impostando però l'argomento `type ='info'` .
+
+```{r}
+
+itemplot(MOD.graded,type ='info', item =1) #IIF del primo item
+```
+
+Se si desidera ottenere tutte le IIF degli item del test con un solo comando, si può utilizzare un ciclo `for()`:
+
+```{r}
+#IIF per il modello graded
+
+for (i in 1:extract.mirt(MOD.graded, "nitems"))
+  {plot(MOD.graded, type = 'infotrace',  
+        which.items = i,facet_items=TRUE, theta_lim = c(-3, 3))} %>%  
+  print()
+```
+
+Infine, tramite la funzione `plot()` è possibile ottenere la TIF del test e l'errore di misura.
+
+```{r}
+#TIF modello graded
+
+plot(MOD.graded, type = 'infoSE',
+     which.items = 1:extract.mirt(MOD.graded, "nitems"), theta_lim = c(-3, 3))
+```

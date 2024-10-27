@@ -1,0 +1,21 @@
+# Scoring di strumenti unidimensionali politomici
+
+Per concludere, vediamo di seguito come è possibile effettuare lo scoring di un test politomico. Per farlo, utilizzeremo sempre Expected a Posteriori Score (EAP; Bock & Mislevy, 1982).
+
+Dopo aver stimato il modello tramite la funzione `mirt()`, procediamo a calcolare l'EAP tramite la funzione `fscores()`. Impostiamoa `full.scores.SE=TRUE` per ottenere anche la stima dell'errore associato alla misura.
+
+```{r}
+#Calcolo gli EAP scores 
+
+eap<-fscores(MOD.graded,method = 'EAP',full.scores.SE = TRUE) 
+colnames(eap)[1]<- 'EAP' 
+colnames(eap)[2]<- 'SD_EAP' 
+```
+
+Poiché viene stimato un punteggio per ogni rispondente, possiamo unire le nuove colonne al nostro database usando la funzione `cbind()`.
+
+```{r}
+#Unisco il punteggio EAP e la stima della precisione SD_EAP al database
+TEST.POLY.EAP<-cbind(TEST.POLY,eap) 
+TEST.POLY.EAP 
+```

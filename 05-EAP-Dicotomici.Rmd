@@ -1,0 +1,28 @@
+# Scoring di strumenti unidimensionali con item dicotomici
+
+Per concludere la parte relativa ai test dicotomici, dopo aver affrontato la calibrazione, vediamo di seguito come è possibile effettuare lo scoring di un test usando Expected a Posteriori Score (EAP; [Bock & Mislevy, 1982](https://psycnet.apa.org/record/1983-07015-001)).
+
+Gli EAP rappresentano la stima probabilistica a posteriori del tratto latente di ogni rispondente, dopo che sono stati osservati i parametri degli item. Ha numerosi vantaggi, fra i quali:
+
+-   Si basa sui pattern di risposta e non sulla semplice somma dei punteggi agli item;
+
+-   Ha lo stesso scaling della location dell'item;
+
+-   Fornisce anche una stima della precisione del puteggio (SD EAP).
+
+Per ottenere gli EAP in mirt dobbiamo usare la funzione `fscores()`. Tramite l'argomento `full.scores.SE=TRUE` possiamo ottenere anche la stima dell'errore associato alla misura e, quindi, della sua precisione.
+
+```{r}
+#Calcolo gli EAP scores
+eap<-fscores(MOD.2PL,method = 'EAP', full.scores.SE = TRUE)
+colnames(eap)[1]<- 'EAP'
+colnames(eap)[2]<- 'SD_EAP'
+```
+
+Poiché viene stimato un punteggio per ogni rispondente, possiamo unire le nuove colonne al nostro database usando la funzione `cbind()`.
+
+```{r}
+TEST.DIC.EAP<-cbind(TEST.DIC, eap) 
+TEST.DIC.EAP
+```
+

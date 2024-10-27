@@ -1,0 +1,21 @@
+# Installare i pacchetti
+
+Per prima cosa, installiamo il pacchetto mirt tramite il comando `install.packages('mirt')` o tramite l'interfaccia di RStudio.
+
+Installiamo poi la [libreria tidyverse](https://www.tidyverse.org) ([Wickham et al., 2019](https://joss.theoj.org/papers/10.21105/joss.01686)) , la quale ci servirà per alcune operazioni da svolgere durante il tutorial.
+
+`install.packages('tidyverse')`
+
+Installiamo, infine, la libreria haven ([Wickham & Miller, 2021](https://CRAN.R-project.org/package=haven)) per l'importazione di dati in formato .sav (in [RStudio](https://posit.co/download/rstudio-desktop/) la libreria è già installata).
+
+`install.packages('haven')`
+
+Come sempre in R, prima di iniziare a lavorare, carichiamo le librerie.
+
+```{r, echo=TRUE, message = FALSE, warning = FALSE, results='hide', fig.show = 'hide'}
+library(mirt)
+library(tidyverse)
+library(haven)
+```
+
+Proseguiremo ora prima all'analisi dei modelli unidimensionali dicotomici e poi ai modelli unidimensionali politomici.

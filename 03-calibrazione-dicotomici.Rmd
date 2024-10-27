@@ -1,0 +1,220 @@
+# Calibrazione di strumenti unidimensionali con item dicotomici
+
+In questa sezione tratteremo gli strumenti unidimensionali con item dicotomici, ovvero quegli strumenti dove tutti gli item misurano lo stesso tratto latente (theta) e tutte le risposte agli item sono dicotomiche (no/sì - falso/vero - 0/1).
+
+Esitono diversi modelli per la calibrazione di strumenti unidimensionali dicotomici, i quali si differenziano per il numero di parametri stimati. Di seguito un riassunto sommario.
+
+[Modello di Rasch]{.underline}
+
+Considera che tutti gli item abbiano una capacità discriminativa uguale ad 1. Stima la location (*b*) per ogni item.
+
+[Modello 1PL]{.underline}
+
+Impone a tutti gli item la stessa capacità discriminativa (*a*), la quale non viene però fissata ad 1. Stima la location (*b*) per ogni item.
+
+[Modello 2PL]{.underline}
+
+Stima la capacità discriminativa (*a*) e la location per ogni item (*b*).
+
+[Modello 3PL]{.underline}
+
+Rispetto al modello 2PL, aggiunge un ulteriore parametro per ogni item, il guessing (*g*), ovvero la stima di quanto il caso influisca sulla risposta. Da utilizzare solo con le scale di abilità per le quali vi è la possibilità di indovinare la risposta, non adatto invece a strumenti in cui il caso è irrilevante (*ad esempio*, risposte aperte poi ricodificate in sbagliato/giusto).
+
+#### Caricare i dati
+
+Per la presente guida, utilizzeremo un database di prova, gentilmente messo a disposizione dal Laboratorio di Psicometria dell'Università di Firenze, contenente 7 item a risposta aperta, poi ricodificata in dicotomica (0,1).
+
+Potete scaricare il database da [qui](https://drive.google.com/file/d/1cOn0-VfqobLjokwo5Ue6tT1s-jAQGtP6/view?usp=sharing) e importarlo tramite la finestra di import di RStudio. In alternativa, potete importarlo tramite il codice come nell'esempio sottostante:
+
+```{r message=FALSE, include=FALSE}
+TEST.DIC<- read_sav("C:/Users/franc/OneDrive/Desktop/TEST.DIC.sav")
+```
+
+```{r echo=TRUE, eval=FALSE}
+TEST.DIC<- read_sav("C:/Users/.../TEST.DIC.sav")
+```
+
+
+NOTA: la directory in esempio è relativa al mio computer e rappresenta dove ho salvato il file TEST.DIC. Per rimportarlo tramite il codice, dovrete cambiare la directory impostando quella relativa al vostro file.
+
+Il database contiene due variabili socio-demografiche e i 7 item già ricodificati in sbagliato (0) e giusto. Ai fini delle analisi IRT, ci interessano solo gli item, i quali vanno selezionati come segue:
+
+```{r}
+TEST.DIC.item<-TEST.DIC[,3:9]
+View(TEST.DIC.item)
+```
+
+#### Calibrazione del modello
+
+Sebbene non sia il primo passaggio in termini di studio di un modello IRT, per poter procedere con le analisi dobbiamo in primo luogo calibrare il modello.
+
+Poiché i 7 del test prevedono l'uso di risposte aperte, le quali rendono l'influenza del guessing minima, utilizzeremo i modelli 1PL e 2PL, per poi effettuare un confronto fra i due.
+
+#### Calibrazione modello 1PL
+
+In primo luogo dobbiamo definire la struttura fattoriale tramite la funzione `mirt.model()`. Essendo un modello unidimensionale tutti gli item satureranno su di un unico fattore (F1=1-7). Poiché il modello è ad un parametro (1PL), inoltre, imporremo il vincolo di uguaglianza alle saturazioni utilizzando l'argomento `CONSTRAIN = (1-7, a1)`.
+
+Nella definizione della struttura, gli item non vanno richiamati per nome ma per posizione ordinale (*ad esempio,* 1-7 significa "*includi tutti gli item dal primo al settimo*").
+
+```{r}
+#Struttura fattoriale del modello 1PL
+
+fct.str.1PL <- mirt.model(
+  'F1 = 1-7
+  CONSTRAIN = (1-7, a1)'
+)
+```
+
+Per calibrare il modello, utilizzeremo la funzione `mirt()`. L'argomento `itemtype` va impostato sul modello 2PL, poiché il modello 1PL è una derivazione del modello 2PL al quale è stato aggiunto un vincolo sulla capacità discriminativa.
+
+```{r message=TRUE, warning=TRUE}
+#Calibrazione modello 1PL
+
+MOD.1PL <- mirt(data=TEST.DIC.item, model=fct.str.1PL, itemtype = "2PL")
+```
+
+##### Verifica delle assunzioni
+
+Prima di procedere con la stima del modello 2PL, verifichiamo l'assunzione di indipendendeza locale, la quale è un prerequisito per il fit di un modello IRT unidimensionale. Per farlo, utilizzeremo la statistica di Local Dependence (LD; [Chen & Thissen, 1997](https://www.jstor.org/stable/1165285?typeAccessWorkflow=login&seq=8)) tramite la funzione `residuals()`.
+
+```{r}
+#Assunzoni 1PL
+
+residuals(MOD.1PL,type='LD',df.p=TRUE)  #LD per il modello 1PL
+
+```
+
+Nei risultati compariranno due matrici. Nella prima matrice sono indicati i *p-value* (diagononale superiore) e i gradi di libertà (diagonale inferiore). Nella seconda matrice sono riportati i valori del Chi-Quadro per ogni coppia di item (diagonale inferiore) e la correlazione fra i residui standardizzati (diagnonale superiore).
+
+I valori dei *p values* minori di .01 [(Chen & Thissen, 1997)](https://doi.org/10.2307/1165285) indicano la presenza di dipendenza locale fra la coppia di item. Maggiore è il numero di *p-values* significativi più è alta la probabilità che la scala non sia unidimensionale.
+
+Per un'ulteriore approfondimento, si possono anche guardare le correlazioni fra i residui standardizzati. Per questi, non c'è un valore soglia, ma più basse sono meglio è.
+
+Per concludere con le assunzioni, è possibile anche verificare le saturazioni degli item sul fattore con la funzione `summary()`.
+
+```{r}
+summary(MOD.1PL) #Saturazioni 1PL
+```
+
+#### Calibrazione modello 2PL
+
+Procediamo ora alla calibrazione del modello 2PL.
+
+Impostiamo la struttura fattoriale, obbligando gli item a saturare sullo stesso fattore (F1) per poi procedere alla calibrazione del modello tramite la funzione `mirt()`.
+
+```{r}
+#Struttura fattoriale del modello 2PL
+
+fct.str.2PL <- mirt.model('F1 = 1-7')
+
+#Calibrazione del modello 2PL
+
+MOD.2PL <- mirt(data=TEST.DIC.item, model=fct.str.2PL, itemtype = "2PL")
+
+```
+
+Verifichiamo poi l'eventuale presenza di Dipendenza Locale nel modello 2PL e osserviamo le saturazioni.
+
+```{r}
+
+#Assunzoni 2PL
+
+residuals(MOD.2PL,type='LD',df.p=TRUE)  #LD per il modello 2PL
+
+summary(MOD.2PL) #Saturazioni 2PL
+
+```
+
+#### Confronto fra modelli
+
+Il confronto fra modelli è una prassi non obbligatoria ma sicuramente utile per riuscire a scegliere il modello con il miglior equilibrio tra capacità esplicativa e parsimoniosità.
+
+Il confronto fra modelli può essere effettuato con la funzione `anova()`.
+
+```{r}
+anova(MOD.1PL, MOD.2PL)
+```
+
+Per il TEST.DIC emerge una differenza significativa *(p* \< .001) tra i modelli 2PL e 1PL, ad indicare che è necessario proseguire con il modello meno parsimonioso, pena la significativa perdita di informazione. Questa conclusione è suffragata anche dagli indici AIC e BIC, migliori per il modello 2PL.
+
+#### Fit del modello e degli item
+
+Dopo aver scelto il modello proseguiamo con il fit della scala e il fit degli item nel modello 2PL.
+
+Per il fit della scala, chiamato anche fit globale, si utilizzano una famiglia di indici derivti dal Chi-Quadrto. Il primo a comparire è stato l'indice $M_2$ e il corrispettivo $RMSEA_2$ ([Maydeu -Olivares, & Joe, 2006](file:///C:/Users/franc/Downloads/s11336-005-1295-9.pdf); [Maydeu-Olivares, & Joe, 2014](https://pubmed.ncbi.nlm.nih.gov/26765800/)).
+
+Negli anni, sono state proposte diverse modifiche dell'indice $M_2$. Nell'esempio sottostante, utilizzeremo una variante denominata $M_2*$ ([Cai, & Hansen, 2013](https://pubmed.ncbi.nlm.nih.gov/22642552/)), la quale è una generalizzazione dell'indice $M_2$ che risulta avere un miglior funzionamento e una maggior applicabilità.
+
+```{r}
+M2(MOD.2PL,type = 'M2*') #Fit Globale 2PL
+```
+
+Si prosegue poi con la verifica del fit di ogni singolo item utilizzando la statistica $S-X^2$ ([Orlando & Thissen, 2000](https://doi.org/10.1177/01466216000241003)). Un valore di *p* maggiore di .01 è indicativo di un buon fit dell'item.
+
+```{r}
+
+itemfit(MOD.2PL, fit_stats = "S_X2", na.rm = T) #fit degli item nel 2PL
+```
+
+#### Parametri degli item e Item **Characteristic** Curves (ICC)
+
+Proseguiamo analizzando i parametri degli item nel modello 2PL. Tramite la funzione `coef()` richiediamo i parametri del modello.
+
+Impostando `IRTpars=TRUE`, ottieniamo i parametri nella metrica classica, dove la location dell'item è indicata con il parametro denominato difficulty (*b)*. Di default, mirt utilizerebbe un'altra metrica, rappresentando la location tramite il parametro *d,* denominato *easiness,* del quale il parametro *b* è una trasformazione, che ne semplifica la leggibilità. In termini formali: $b=-a/d$.
+
+```{r}
+COEF.2PL<-coef(MOD.2PL, IRTpars=TRUE, simplify=TRUE)
+COEF.2PL
+```
+
+Tutti gli item dimostravano una capacità discriminativa (*a*) eccellente, ad ecezione dell'item 6, il quale risultava avere una capacità discriminiativa moderata e l'item 7 che risultava avere una capacità discriminativa alta [(Baker, 2001)](https://www.ime.unicamp.br/~cnaber/Baker_Book.pdf).
+
+Per quanto riguarda la location, tutti gli item risultavano essere collacati fra -1.34 e 1.47 ad indicare che il test risultava misurare i livelli medi di tratto.
+
+Con la funzione `itemplot()` è possibile ottenere le ICC degli item. L'argomento "item="permette di selezionare l'item da stampare in console.
+
+```{r}
+itemplot(MOD.2PL,type = 'trace', item =1) #ICC del primo item
+```
+
+Se si desidera ottenere tutte le ICC degli item del test con un solo comando, si può utilizzare un ciclo `for()`.
+
+```{r}
+# Stampa di tutte le ICC del test
+
+for(i in 1:extract.mirt(MOD.2PL, "nitems"))
+{plot(MOD.2PL, type = 'trace',
+      which.items = i,
+      facet_items=TRUE, theta_lim = c(-3, 3))} %>% 
+  print()
+```
+
+#### Capacità informativa del test, Item Information Functions (IIFs) e Test Information Function (TIF)
+
+Come ultimo aspetto della calibrazione, è possibile verificare l'informazione apportata da ogni singolo item e l'informazione complessiva del test.
+
+L'informazione apportata da ogni singolo item può essere visualizzata tramite le IIF di ogni singolo item, tramite il comando itemplot() e impostando l'argomento `type ='info'` .
+
+```{r}
+itemplot(MOD.2PL,type ='info', item =1) #IIF del primo item
+```
+
+Se si desidera ottenere tutte le IIF degli item del test con un solo comando, si può utilizzare un ciclo `for()`:
+
+```{r}
+
+#IIF
+for (i in 1:extract.mirt(MOD.2PL, "nitems"))
+{plot(MOD.2PL, type = 'infotrace', 
+      which.items = i,
+      facet_items=TRUE, theta_lim = c(-3, 3))} %>%
+  print()
+```
+
+Per ottenere, invece, la TIF e l'errore di misura, va utilizzata la funzione `plot()`, inserendo l'argomento `type = 'infoSE'`.
+
+```{r}
+
+plot(MOD.2PL, type = 'infoSE',
+     which.items = 1:extract.mirt(MOD.2PL, "nitems"), theta_lim = c(-3, 3))
+```

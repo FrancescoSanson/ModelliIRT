@@ -1,0 +1,186 @@
+# Differential Item Functioning per item politomici
+
+La procedura per lo studio dell'invarianza a livello di item calibrati tramite il modello graded è la medesima illustrata per il modello 2PL.
+
+Di seguito verrà illustrata l'invarianza di genere della scala TEST.POLY, utilizzando la varibile SESSO (1=maschio, 2=femmina).
+
+Per prima cosa selezioniamo la variabile gruppo.
+
+```{r}
+GRUPPO<-as.factor(TEST.POLY$SESSO) #var. gruppo
+```
+
+Selezioniamo poi gli item sui quali condurre l'invarianza.
+
+```{r}
+item.DIF.graded<-TEST.POLY[,2:7]  #item per DIF
+```
+
+Definiamo poi la struttura fattoriale, come già fatto in precedenza.
+
+```{r}
+
+fct.str.DIF <- mirt.model('F1 = 1-6')
+```
+
+Infine, creiamo un oggetto contenente il tipo di modello, per non doverlo inserire in ogni passaggio.
+
+```{r}
+
+tipo.mod<-'graded'  
+```
+
+#### Stima dei parametri nei due gruppi
+
+Procediamo alla stima dei parametri degli item nel gruppo di maschi inserendo l'etichetta '1' all'interno della voce GRUPPO (`GRUPPO==1`).
+
+```{r}
+
+mod.group1<-filter(item.DIF.graded, GRUPPO=='1')%>%    #Inserire il gruppo
+  mirt(model=fct.str.DIF, itemtype = tipo.mod) 
+
+coef(mod.group1, simplify=TRUE, IRTpars=T)    #stampa dei parametri 
+```
+
+Stimiamo poi i parametri nel gruppo delle femmine (`GRUPPO==2`).
+
+```{r}
+
+mod.group2<-filter(item.DIF.graded, GRUPPO=='2')%>%    #Inserire il gruppo
+  mirt(model=fct.str.DIF, itemtype = tipo.mod) 
+
+coef(mod.group2, simplify=TRUE, IRTpars=T)    #stampa dei parametri
+```
+
+#### Primo step della procedura di purificazione
+
+Procediamo poi con il primo step della procedura di purificazione, stimando un modello di partenza tramite la funzione `multiplegroup()`, dove nell' argomento `invariance =c()` provvederemo a:
+
+-   vincolare i parametri degli item essere uguali nei due gruppi (`colnames(item.DIF.graded)`);
+
+-   Fissare le medie a 0 nel gruppo di riferimento e a lasciarle libere nel gruppo focale (`'free_means'`);
+
+-   Fissare le varianze a 1 nel gruppo di riferimento e a lasciarle libere nel gruppo focale (`'free_var'` );
+
+```{r}
+#Primo step della procedura di purificazione.
+#Stima del modello di partenza
+
+mod.dif.1<-multipleGroup(item.DIF.graded,model=fct.str.DIF,
+                         itemtype =tipo.mod,group =GRUPPO,SE=TRUE,
+                         invariance = c(colnames(item.DIF.graded),
+                                        'free_means', 'free_var'))
+```
+
+A partire da questo modello, procediamo a stimare il DIF al primo step di interazione tramite la funzione `DIF()`. Impostando la voce `scheme='drop'`, procediamo rimuovendo i vincoli degli item uno ad uno per essere confrontati tramite il Chi-Quadro nei due gruppi.
+
+Primamariamente, verifichiamo la possibile presenza di DIF nei parametri *a* (`which.par = 'a1'`)
+
+```{r}
+#DIF in a al primo step di purificazione
+
+DIF(mod.dif.1,which.par = 'a1', simplify = TRUE, scheme = 'drop')
+```
+
+Per quanto riguarda la capacità discriminativa, l'item 6 mostrava DIF al primo step di purificazione ($X^2$(1)=9.63 , *p* \< .01).
+
+Proseguiamo poi con la stima del DIF relativo alle soglie. Come per il modello 2PL anche in questo caso va utilizzato il parametro *d*. Inoltre, inserendo nella funzione `which.par =c('d1', 'd2','d3','d4')` andiamo a analizzare il DIF nelle soglie congiuntamente.
+
+```{r}
+#DIF in a al primo step di purificazione
+
+DIF(mod.dif.1,which.par =c('d1', 'd2','d3','d4'),
+    simplify = TRUE, scheme = 'drop')
+```
+
+Per quanto riguarda le soglie, nessun item mostrava DIF.
+
+#### Secondo step della procedura di purificazione
+
+Procediamo quindi con il secondo step della procedura di purificazione per confermare la possibile presenza di DIF nella capacità discriminativa dell'item 6.
+
+Innanzitutto, definiamo gli item ancora.
+
+```{r}
+
+#Definisco gli item ancora  
+
+itemnames <- colnames(item.DIF.graded) 
+item.ancora<- itemnames[c(1,2,3,4,5)] #Inserire gli item ancora
+print(item.ancora)
+```
+
+Proseguiamo poi creando un oggetto che contenga l'item candidato, ovvero il sesto.
+
+```{r}
+#Definisco gli item candidati
+
+item.candidati<- c(6)  #Inserire gli item candidati 
+print(item.candidati) 
+```
+
+Procediamo poi a creare un nuovo modello tramite la funzione `multiplegroup()` con i seguenti vincoli all'interno dell'argomento `invariance=c()`:
+
+-   i parametri degli item ancora fissati ad essere uguali nei due gruppi;
+
+-   le medie e le varianze fissate a 0 e 1 nel gruppo focale e libere di essere stimate nel gruppo di riferimento.
+
+```{r}
+#Secondo step della procedura di purificazione.
+#Stima del modello
+
+mod.dif.2<-multipleGroup(item.DIF.graded,model=fct.str.DIF,
+                         itemtype =tipo.mod,group =GRUPPO,SE=TRUE,
+                         invariance = c(item.ancora,
+                                        'free_means', 'free_var'))
+```
+
+Stiamiamo ora il DIF nella capacità discriminativa del solo item 6, utilizzando lo schema `'add'`.
+
+```{r}
+#DIF in a al secondo step di purificazione  
+
+DIF(mod.dif.2,which.par = 'a1', simplify = TRUE, 
+    scheme = 'add', items2test = item.candidati)
+```
+
+Il DIF nella capacità discrimiativa dell'item 6 è stato confermato anche al secondo step della procedura di purificazione ($X^2$(1)=6.93 , *p* \< .01), ad indicare che l'item riusultava essere discriminare meglio le differenze di tratto nei maschi (*a*=1.65) rispetto alle femmine (*a*=1.19).
+
+Questo può essere anche analizzato graficamente tramite la funzione `itemplot()`.
+
+```{r}
+
+itemplot(mod.dif.2, item=6, 
+         type='trace', theta_lim = c(-3, 3)) 
+```
+
+#### Effect size del DIF
+
+Verifichiamo ora l'effect size del DIF nel parametro dell'item 6, tramite la procdura descritta da [Meade (2010)](https://pubmed.ncbi.nlm.nih.gov/20604592/).
+
+**Effect size a livello di item**
+
+In primo luogo valutiamo l'effect size a livello di item, tramite gli indici e l'ispezione grafica.
+
+```{r}
+#Effect size al livello degli item
+
+#Indici
+empirical_ES(mod.dif.2)              
+#Grafici 
+empirical_ES(mod.dif.2, plot = TRUE) 
+```
+
+**Effect size a livello di test**
+
+Proseguiamo verificando l'impatto del DIF sull'intero test.
+
+```{r}
+#Effect Size a livello del test
+
+#Indici
+empirical_ES(mod.dif.2, DIF = FALSE)               
+#Grafici
+empirical_ES(mod.dif.2, DIF = FALSE, plot = TRUE) 
+```
+
