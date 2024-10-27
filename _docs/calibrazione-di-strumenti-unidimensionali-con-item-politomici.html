@@ -265,20 +265,13 @@ Iteration: 58, Log-Lik: -4479.628, Max-Change: 0.00010</code></pre>
 <span id="cb78-3"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb78-3" tabindex="-1"></a><span class="fu">residuals</span>(MOD.graded,<span class="at">type=</span><span class="st">&#39;LD&#39;</span>,<span class="at">df.p=</span><span class="cn">TRUE</span>) <span class="co">#LD per il modello greaded</span></span></code></pre></div>
 <pre><code>## Degrees of freedom (lower triangle) and p-values:
 ## 
-##             ITEM_POLY_1 ITEM_POLY_2 ITEM_POLY_3 ITEM_POLY_4 ITEM_POLY_5
-## ITEM_POLY_1          NA       0.001       0.008       0.022       0.045
-## ITEM_POLY_2          16          NA       0.001       0.000       0.002
-## ITEM_POLY_3          16      16.000          NA       0.009       0.285
-## ITEM_POLY_4          16      16.000      16.000          NA       0.108
-## ITEM_POLY_5          16      16.000      16.000      16.000          NA
-## ITEM_POLY_6          16      16.000      16.000      16.000      16.000
-##             ITEM_POLY_6
-## ITEM_POLY_1       0.478
-## ITEM_POLY_2       0.000
-## ITEM_POLY_3       0.038
-## ITEM_POLY_4       0.001
-## ITEM_POLY_5       0.035
-## ITEM_POLY_6          NA
+##             ITEM_POLY_1 ITEM_POLY_2 ITEM_POLY_3 ITEM_POLY_4 ITEM_POLY_5 ITEM_POLY_6
+## ITEM_POLY_1          NA       0.001       0.008       0.022       0.045       0.478
+## ITEM_POLY_2          16          NA       0.001       0.000       0.002       0.000
+## ITEM_POLY_3          16      16.000          NA       0.009       0.285       0.038
+## ITEM_POLY_4          16      16.000      16.000          NA       0.108       0.001
+## ITEM_POLY_5          16      16.000      16.000      16.000          NA       0.035
+## ITEM_POLY_6          16      16.000      16.000      16.000      16.000          NA
 ## 
 ## LD matrix (lower triangle) and standardized values.
 ## 
@@ -286,20 +279,13 @@ Iteration: 58, Log-Lik: -4479.628, Max-Change: 0.00010</code></pre>
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##  -0.118  -0.106  -0.092  -0.023   0.089   0.113 
 ## 
-##             ITEM_POLY_1 ITEM_POLY_2 ITEM_POLY_3 ITEM_POLY_4 ITEM_POLY_5
-## ITEM_POLY_1          NA       0.113      -0.102      -0.096      -0.092
-## ITEM_POLY_2      40.212          NA      -0.112      -0.118      -0.109
-## ITEM_POLY_3      32.761      39.919          NA       0.101      -0.077
-## ITEM_POLY_4      29.242      43.927      32.173          NA       0.086
-## ITEM_POLY_5      26.708      37.794      18.698      23.223          NA
-## ITEM_POLY_6      15.640      42.481      27.294      39.625      27.577
-##             ITEM_POLY_6
-## ITEM_POLY_1       0.070
-## ITEM_POLY_2      -0.116
-## ITEM_POLY_3       0.093
-## ITEM_POLY_4       0.112
-## ITEM_POLY_5      -0.093
-## ITEM_POLY_6          NA</code></pre>
+##             ITEM_POLY_1 ITEM_POLY_2 ITEM_POLY_3 ITEM_POLY_4 ITEM_POLY_5 ITEM_POLY_6
+## ITEM_POLY_1          NA       0.113      -0.102      -0.096      -0.092       0.070
+## ITEM_POLY_2      40.212          NA      -0.112      -0.118      -0.109      -0.116
+## ITEM_POLY_3      32.761      39.919          NA       0.101      -0.077       0.093
+## ITEM_POLY_4      29.242      43.927      32.173          NA       0.086       0.112
+## ITEM_POLY_5      26.708      37.794      18.698      23.223          NA      -0.093
+## ITEM_POLY_6      15.640      42.481      27.294      39.625      27.577          NA</code></pre>
 <div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb80-1" tabindex="-1"></a><span class="fu">summary</span>(MOD.graded) <span class="co">#Saturazioni 1PL</span></span></code></pre></div>
 <pre><code>##                F1    h2
 ## ITEM_POLY_1 0.709 0.503
@@ -324,10 +310,8 @@ Iteration: 58, Log-Lik: -4479.628, Max-Change: 0.00010</code></pre>
 <p>Nel caso del fit del modello, utilizzeremo un’altra variante della statistica <span class="math inline">\(M_2\)</span> (<a href="#id_0">Maydeu -Olivares, &amp; Joe, 2006</a>; <a href="#id_0">Maydeu-Olivares, &amp; Joe, 2014</a>), ovvero la stastistica C2 (<a href="#id_0">Cai, &amp; Monroe, 2014</a>). A differenza della statistica <span class="math inline">\(M_2\)</span>, la statistica C2 può essere utilizzata anche con pochi item con tante categorie di risposta.</p>
 <p>Per ottenere la statistica C2 useremo sempre la funzione <code>M2()</code>, inserendo però come argomento <code>type='C2'</code>.</p>
 <div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb82-1" tabindex="-1"></a><span class="fu">M2</span>(MOD.graded,<span class="at">type =</span> <span class="st">&#39;C2&#39;</span>) <span class="co">#Fit Globale graded</span></span></code></pre></div>
-<pre><code>##             M2 df            p      RMSEA   RMSEA_5   RMSEA_95
-## stats 48.58374  9 1.986294e-07 0.07466183 0.0548381 0.09583464
-##            SRMSR       TLI       CFI
-## stats 0.05477425 0.9579285 0.9747571</code></pre>
+<pre><code>##             M2 df            p      RMSEA   RMSEA_5   RMSEA_95      SRMSR       TLI       CFI
+## stats 48.58374  9 1.986294e-07 0.07466183 0.0548381 0.09583464 0.05477425 0.9579285 0.9747571</code></pre>
 <p>Proseguiamo poi con il fit fi ogni item tramite la statistica <span class="math inline">\(S-X^2\)</span> (<a href="https://doi.org/10.1177/01466216000241003">Orlando &amp; Thissen, 2000</a>), utilizzando come soglia <em>p&lt;</em> .01.</p>
 <div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb84-1" tabindex="-1"></a><span class="fu">itemfit</span>(MOD.graded, <span class="at">fit_stats =</span> <span class="st">&quot;S_X2&quot;</span>, <span class="at">na.rm =</span> T) <span class="co">#fit degli item nel graded</span></span></code></pre></div>
 <pre><code>## Data does not contain missing values. Continuing normally</code></pre>
