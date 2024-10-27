@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Scoring di strumenti unidimensionali con item dicotomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</title>
+  <meta name="description" content="Scoring di strumenti unidimensionali con item dicotomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Scoring di strumenti unidimensionali con item dicotomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Scoring di strumenti unidimensionali con item dicotomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  
+  
+  
+
+<meta name="author" content="a cura di Francesco Sanson" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="differential-item-functioning-per-modelli-dicotomici.html"/>
+<link rel="next" href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Guida IRT</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduzione-alla-guida.html"><a href="introduzione-alla-guida.html"><i class="fa fa-check"></i>Introduzione alla guida</a></li>
+<li class="chapter" data-level="" data-path="installare-i-pacchetti.html"><a href="installare-i-pacchetti.html"><i class="fa fa-check"></i>Installare i pacchetti</a></li>
+<li class="chapter" data-level="" data-path="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html"><a href="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html"><i class="fa fa-check"></i>Calibrazione di strumenti unidimensionali con item dicotomici</a></li>
+<li class="chapter" data-level="" data-path="differential-item-functioning-per-modelli-dicotomici.html"><a href="differential-item-functioning-per-modelli-dicotomici.html"><i class="fa fa-check"></i>Differential Item Functioning per modelli dicotomici</a></li>
+<li class="chapter" data-level="" data-path="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html"><a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html"><i class="fa fa-check"></i>Scoring di strumenti unidimensionali con item dicotomici</a></li>
+<li class="chapter" data-level="" data-path="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html"><i class="fa fa-check"></i>Calibrazione di strumenti unidimensionali con item politomici</a></li>
+<li class="chapter" data-level="" data-path="differential-item-functioning-per-item-politomici.html"><a href="differential-item-functioning-per-item-politomici.html"><i class="fa fa-check"></i>Differential Item Functioning per item politomici</a></li>
+<li class="chapter" data-level="" data-path="scoring-di-strumenti-unidimensionali-politomici.html"><a href="scoring-di-strumenti-unidimensionali-politomici.html"><i class="fa fa-check"></i>Scoring di strumenti unidimensionali politomici</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="scoring-di-strumenti-unidimensionali-con-item-dicotomici" class="section level1 hasAnchor">
+<h1>Scoring di strumenti unidimensionali con item dicotomici<a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html#scoring-di-strumenti-unidimensionali-con-item-dicotomici" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Per concludere la parte relativa ai test dicotomici, dopo aver affrontato la calibrazione, vediamo di seguito come è possibile effettuare lo scoring di un test usando Expected a Posteriori Score (EAP; <a href="https://psycnet.apa.org/record/1983-07015-001">Bock &amp; Mislevy, 1982</a>).</p>
+<p>Gli EAP rappresentano la stima probabilistica a posteriori del tratto latente di ogni rispondente, dopo che sono stati osservati i parametri degli item. Ha numerosi vantaggi, fra i quali:</p>
+<ul>
+<li><p>Si basa sui pattern di risposta e non sulla semplice somma dei punteggi agli item;</p></li>
+<li><p>Ha lo stesso scaling della location dell’item;</p></li>
+<li><p>Fornisce anche una stima della precisione del puteggio (SD EAP).</p></li>
+</ul>
+<p>Per ottenere gli EAP in mirt dobbiamo usare la funzione <code>fscores()</code>. Tramite l’argomento <code>full.scores.SE=TRUE</code> possiamo ottenere anche la stima dell’errore associato alla misura e, quindi, della sua precisione.</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html#cb69-1" tabindex="-1"></a><span class="co">#Calcolo gli EAP scores</span></span>
+<span id="cb69-2"><a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html#cb69-2" tabindex="-1"></a>eap<span class="ot">&lt;-</span><span class="fu">fscores</span>(MOD<span class="fl">.2</span>PL,<span class="at">method =</span> <span class="st">&#39;EAP&#39;</span>, <span class="at">full.scores.SE =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb69-3"><a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html#cb69-3" tabindex="-1"></a><span class="fu">colnames</span>(eap)[<span class="dv">1</span>]<span class="ot">&lt;-</span> <span class="st">&#39;EAP&#39;</span></span>
+<span id="cb69-4"><a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html#cb69-4" tabindex="-1"></a><span class="fu">colnames</span>(eap)[<span class="dv">2</span>]<span class="ot">&lt;-</span> <span class="st">&#39;SD_EAP&#39;</span></span></code></pre></div>
+<p>Poiché viene stimato un punteggio per ogni rispondente, possiamo unire le nuove colonne al nostro database usando la funzione <code>cbind()</code>.</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html#cb70-1" tabindex="-1"></a>TEST.DIC.EAP<span class="ot">&lt;-</span><span class="fu">cbind</span>(TEST.DIC, eap) </span>
+<span id="cb70-2"><a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html#cb70-2" tabindex="-1"></a>TEST.DIC.EAP</span></code></pre></div>
+<pre><code>##    sex country ITEM_DIC_1 ITEM_DIC_2 ITEM_DIC_3 ITEM_DIC_4 ITEM_DIC_5 ITEM_DIC_6 ITEM_DIC_7         EAP
+## 1    2       1          0          0          0          0          0          0          0 -1.46448628
+## 2    2       1          0          0          0          0          0          0          0 -1.46448628
+## 3    2       1          0          0          0          0          0          0          0 -1.46448628
+## 4    2       1          0          0          0          0          0          0          0 -1.46448628
+## 5    2       1          0          0          0          0          0          0          0 -1.46448628
+## 6    1       1          0          0          0          0          0          0          0 -1.46448628
+## 7    2       1          0          0          0          0          0          0          0 -1.46448628
+## 8    2       1          0          0          0          0          0          0          0 -1.46448628
+## 9    1       2          0          0          0          0          0          0          0 -1.46448628
+## 10   1       2          0          0          0          0          0          0          0 -1.46448628
+## 11   2       2          0          0          0          0          0          0          0 -1.46448628
+## 12   1       2          0          0          0          0          0          0          0 -1.46448628
+## 13   1       2          0          0          0          0          0          0          0 -1.46448628
+## 14   1       2          0          0          0          0          0          0          0 -1.46448628
+## 15   1       2          0          0          0          0          0          0          0 -1.46448628
+## 16   1       2          0          0          0          0          0          0          0 -1.46448628
+## 17   1       2          0          0          0          0          0          0          0 -1.46448628
+## 18   1       2          0          0          0          0          0          0          0 -1.46448628
+## 19   1       2          0          0          0          0          0          0          0 -1.46448628
+## 20   1       2          0          0          0          0          0          0          0 -1.46448628
+## 21  NA       2          0          0          0          0          0          0          0 -1.46448628
+## 22   2       1          1          0          0          0          0          0          0 -0.80440187
+## 23   2       1          1          0          0          0          0          0          0 -0.80440187
+## 24   1       2          0          1          0          0          0          0          0 -0.83951106
+## 25   1       2          0          1          0          0          0          0          0 -0.83951106
+## 26   2       1          0          0          1          0          0          0          0 -0.86594932
+## 27   2       2          1          0          1          0          0          0          0 -0.36923624
+## 28   2       1          0          0          0          1          0          0          0 -0.49273305
+## 29   1       2          0          0          0          1          0          0          0 -0.49273305
+## 30   1       1          1          0          0          1          0          0          0 -0.07300478
+## 31   2       1          1          0          0          1          0          0          0 -0.07300478
+## 32   1       2          1          0          0          1          0          0          0 -0.07300478
+## 33   2       1          0          0          0          0          1          0          0 -0.82034309
+## 34   1       1          0          0          0          0          1          0          0 -0.82034309
+## 35   2       1          0          0          0          0          1          0          0 -0.82034309
+## 36   2       1          0          0          0          0          1          0          0 -0.82034309
+## 37   2       1          0          0          0          0          1          0          0 -0.82034309
+## 38   2       1          0          0          0          0          1          0          0 -0.82034309
+## 39   2       1          0          0          0          0          1          0          0 -0.82034309
+## 40   2       1          0          0          0          0          1          0          0 -0.82034309
+## 41   2       1          0          0          0          0          1          0          0 -0.82034309
+## 42   2       1          0          0          0          0          1          0          0 -0.82034309
+## 43   2       1          0          0          0          0          1          0          0 -0.82034309
+## 44   2       1          0          0          0          0          1          0          0 -0.82034309
+## 45   2       1          0          0          0          0          1          0          0 -0.82034309
+## 46   2       1          0          0          0          0          1          0          0 -0.82034309
+## 47   2       1          0          0          0          0          1          0          0 -0.82034309
+## 48   2       1          0          0          0          0          1          0          0 -0.82034309
+## 49   1       2          0          0          0          0          1          0          0 -0.82034309
+## 50   2       2          0          0          0          0          1          0          0 -0.82034309
+## 51   1       2          0          0          0          0          1          0          0 -0.82034309
+## 52   1       2          0          0          0          0          1          0          0 -0.82034309
+## 53   1       2          0          0          0          0          1          0          0 -0.82034309
+## 54   1       2          0          0          0          0          1          0          0 -0.82034309
+## 55   1       2          0          0          0          0          1          0          0 -0.82034309
+## 56   2       2          0          0          0          0          1          0          0 -0.82034309
+## 57   1       2          0          0          0          0          1          0          0 -0.82034309
+## 58  NA       2          0          0          0          0          1          0          0 -0.82034309
+## 59   1       2          0          0          0          0          1          0          0 -0.82034309
+## 60   2       2          0          0          0          0          1          0          0 -0.82034309
+## 61   1       1          1          0          0          0          1          0          0 -0.33438813
+## 62   2       1          1          0          0          0          1          0          0 -0.33438813
+## 63   2       1          1          0          0          0          1          0          0 -0.33438813
+## 64   1       2          1          0          0          0          1          0          0 -0.33438813
+## 65   1       2          1          0          0          0          1          0          0 -0.33438813
+## 66   1       2          0          1          0          0          1          0          0 -0.36148913
+## 67   2       1          0          0          1          0          1          0          0 -0.38177624
+## 68   2       1          0          0          1          0          1          0          0 -0.38177624
+## 69   2       1          0          0          1          0          1          0          0 -0.38177624
+## 70   2       1          0          0          1          0          1          0          0 -0.38177624
+## 71   2       1          0          0          1          0          1          0          0 -0.38177624
+## 72   1       2          0          0          1          0          1          0          0 -0.38177624
+## 73   1       2          0          0          1          0          1          0          0 -0.38177624
+## 74   2       1          1          0          1          0          1          0          0  0.02104946
+## 75   2       1          1          0          1          0          1          0          0  0.02104946
+## 76   1       1          0          0          0          1          1          0          0 -0.08412452
+## 77   1       1          0          0          0          1          1          0          0 -0.08412452
+## 78   1       1          0          0          0          1          1          0          0 -0.08412452
+## 79   1       1          0          0          0          1          1          0          0 -0.08412452
+## 80   2       1          0          0          0          1          1          0          0 -0.08412452
+## 81   2       1          0          0          0          1          1          0          0 -0.08412452
+## 82   1       2          0          0          0          1          1          0          0 -0.08412452
+## 83   2       2          0          0          0          1          1          0          0 -0.08412452
+## 84   1       2          0          0          0          1          1          0          0 -0.08412452
+## 85   1       2          0          0          0          1          1          0          0 -0.08412452
+## 86   1       2          0          0          0          1          1          0          0 -0.08412452
+## 87   1       1          0          0          1          1          1          0          0  0.25111731
+## 88   1       1          0          0          1          1          1          0          0  0.25111731
+## 89   2       1          0          0          1          1          1          0          0  0.25111731
+## 90   2       1          1          0          1          1          1          0          0  0.63506533
+##       SD_EAP
+## 1  0.6573869
+## 2  0.6573869
+## 3  0.6573869
+## 4  0.6573869
+## 5  0.6573869
+## 6  0.6573869
+## 7  0.6573869
+## 8  0.6573869
+## 9  0.6573869
+## 10 0.6573869
+## 11 0.6573869
+## 12 0.6573869
+## 13 0.6573869
+## 14 0.6573869
+## 15 0.6573869
+## 16 0.6573869
+## 17 0.6573869
+## 18 0.6573869
+## 19 0.6573869
+## 20 0.6573869
+## 21 0.6573869
+## 22 0.5504950
+## 23 0.5504950
+## 24 0.5560183
+## 25 0.5560183
+## 26 0.5602050
+## 27 0.4885994
+## 28 0.5044352
+## 29 0.5044352
+## 30 0.4604422
+## 31 0.4604422
+## 32 0.4604422
+## 33 0.5529974
+## 34 0.5529974
+## 35 0.5529974
+## 36 0.5529974
+## 37 0.5529974
+## 38 0.5529974
+## 39 0.5529974
+## 40 0.5529974
+## 41 0.5529974
+## 42 0.5529974
+## 43 0.5529974
+## 44 0.5529974
+## 45 0.5529974
+## 46 0.5529974
+## 47 0.5529974
+## 48 0.5529974
+## 49 0.5529974
+## 50 0.5529974
+## 51 0.5529974
+## 52 0.5529974
+## 53 0.5529974
+## 54 0.5529974
+## 55 0.5529974
+## 56 0.5529974
+## 57 0.5529974
+## 58 0.5529974
+## 59 0.5529974
+## 60 0.5529974
+## 61 0.4844955
+## 62 0.4844955
+## 63 0.4844955
+## 64 0.4844955
+## 65 0.4844955
+## 66 0.4876718
+## 67 0.4901188
+## 68 0.4901188
+## 69 0.4901188
+## 70 0.4901188
+## 71 0.4901188
+## 72 0.4901188
+## 73 0.4901188
+## 74 0.4552613
+## 75 0.4552613
+## 76 0.4611871
+## 77 0.4611871
+## 78 0.4611871
+## 79 0.4611871
+## 80 0.4611871
+## 81 0.4611871
+## 82 0.4611871
+## 83 0.4611871
+## 84 0.4611871
+## 85 0.4611871
+## 86 0.4611871
+## 87 0.4514195
+## 88 0.4514195
+## 89 0.4514195
+## 90 0.4706872
+##  [ reached &#39;max&#39; / getOption(&quot;max.print&quot;) -- omitted 328 rows ]</code></pre>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="differential-item-functioning-per-modelli-dicotomici.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/05-EAP-Dicotomici.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Calibrazione di strumenti unidimensionali con item politomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</title>
+  <meta name="description" content="Calibrazione di strumenti unidimensionali con item politomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Calibrazione di strumenti unidimensionali con item politomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Calibrazione di strumenti unidimensionali con item politomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  
+  
+  
+
+<meta name="author" content="a cura di Francesco Sanson" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html"/>
+<link rel="next" href="differential-item-functioning-per-item-politomici.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Guida IRT</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduzione-alla-guida.html"><a href="introduzione-alla-guida.html"><i class="fa fa-check"></i>Introduzione alla guida</a></li>
+<li class="chapter" data-level="" data-path="installare-i-pacchetti.html"><a href="installare-i-pacchetti.html"><i class="fa fa-check"></i>Installare i pacchetti</a></li>
+<li class="chapter" data-level="" data-path="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html"><a href="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html"><i class="fa fa-check"></i>Calibrazione di strumenti unidimensionali con item dicotomici</a></li>
+<li class="chapter" data-level="" data-path="differential-item-functioning-per-modelli-dicotomici.html"><a href="differential-item-functioning-per-modelli-dicotomici.html"><i class="fa fa-check"></i>Differential Item Functioning per modelli dicotomici</a></li>
+<li class="chapter" data-level="" data-path="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html"><a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html"><i class="fa fa-check"></i>Scoring di strumenti unidimensionali con item dicotomici</a></li>
+<li class="chapter" data-level="" data-path="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html"><i class="fa fa-check"></i>Calibrazione di strumenti unidimensionali con item politomici</a></li>
+<li class="chapter" data-level="" data-path="differential-item-functioning-per-item-politomici.html"><a href="differential-item-functioning-per-item-politomici.html"><i class="fa fa-check"></i>Differential Item Functioning per item politomici</a></li>
+<li class="chapter" data-level="" data-path="scoring-di-strumenti-unidimensionali-politomici.html"><a href="scoring-di-strumenti-unidimensionali-politomici.html"><i class="fa fa-check"></i>Scoring di strumenti unidimensionali politomici</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="calibrazione-di-strumenti-unidimensionali-con-item-politomici" class="section level1 hasAnchor">
+<h1>Calibrazione di strumenti unidimensionali con item politomici<a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#calibrazione-di-strumenti-unidimensionali-con-item-politomici" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>In questa sezione tratteremo gli strumenti unidimensionali con item politomici, ovvero quegli strumenti dove tutti gli item misurano lo stesso tratto latente (theta) e le risposte vengono raccolte tramite una scala Likert (ovvero, categorie di risposta ordinate).</p>
+<p>Il modello maggiormente utilizzato per la calibrazione di strumenti politomici con risposte ordinate è il graded model (<a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1968.tb00153.x">Samejima, 1968</a>). In questo modello, ogni item ha la propria capacità discriminativa (indicata sempre con “a1”). Inoltre, ogni item ha un numero di parametri di location uguali al numero di punti della scala Likert meno 1. Ad esempio, un item raccolto sul scala Likert a 5 punti, avrà 4 parametri di location, denominati <span class="math inline">\(b_1, b_2, b_3\)</span> e <span class="math inline">\(b_4\)</span>. Questi parametri sono denominati “soglie” e rappresentano il punto esatto lungo il continuum di theta dove la probabilità di dare la risposta che precede la soglia o la risposta che segue la soglia si equivalgono. Ad esempio la soglia <span class="math inline">\(b_4\)</span> è uguale a 1.59, ciò significa che una persona con livello di theta di 1.59 ha la stessa probabilità di dare le risposte 4 e 5 alla scala Likert. Una persona con theta di 1.58 avrà una maggior probabilità di dare la risposta 4, mentre una persona con theta di 1.60 avrà invece una probabilità maggiore di dare la risposta 5.</p>
+<div id="caricare-i-dati-1" class="section level4 hasAnchor">
+<h4>Caricare i dati<a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#caricare-i-dati-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Per mostrare la calibrazione di uno strumento tramite il graded model, usaremo come esempio un altro database di prova (<em>denominato</em> TEST.POLY) gentilmente messo a disposizione dal Laboratorio di Psicometria dell’Università di Firenze. Il database contiene le risposte di 790 persone, tramite sei item su scala Likert a 5 punti (1=Molto raramente; 5=Molto spesso).</p>
+<p>I dati sono scaricabili da <a href="https://drive.google.com/file/d/1pCxq3HV-t7pTHEtu7X5BI4YO9XcNkcM4/view?usp=sharing">qui</a>.</p>
+<p>Per caricare i dati, come già visto, carichiamo la libreria haven (i dati sono in .sav) e importiamo il database TEST.POLY.sav tramite la funzione <code>read_sav()</code> del paccheto haven.</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb72-1" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb72-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb72-2" tabindex="-1"></a>TEST.POLY<span class="ot">&lt;-</span><span class="fu">read_sav</span>(<span class="st">&quot;C:/Users/.../TEST.POLY.sav&quot;</span>)</span></code></pre></div>
+<p>Poiché nel database comapre anche la variabile relativa al sesso dei partecipanti, procediamo a selezionare solo gli item per la calibrazione.</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb73-1" tabindex="-1"></a><span class="co">#Seleziono solo gli item della scala </span><span class="al">TEST</span><span class="co">.POLY</span></span>
+<span id="cb73-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb73-2" tabindex="-1"></a></span>
+<span id="cb73-3"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb73-3" tabindex="-1"></a>TEST.POLY.item <span class="ot">&lt;-</span>TEST.POLY[,<span class="dv">2</span><span class="sc">:</span><span class="dv">7</span>]</span></code></pre></div>
+</div>
+<div id="calibrazione-modello-graded" class="section level4 hasAnchor">
+<h4>Calibrazione modello graded<a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#calibrazione-modello-graded" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>In primo luogo, bisogna richiamare le librerie (solo se è stato chiuso RStudio dall’ultima sessione).</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb74-1" tabindex="-1"></a><span class="fu">library</span>(mirt)</span>
+<span id="cb74-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb74-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<p>Come già visto per la calibrazione di modelli dicotomici, il primo passaggio consiste nel definire la struttura fattoriale tramite la funzione <code>mirt.model()</code>. Dato che il modello è unidimensionale, tutti gli item satureranno sul medesimo fattore (F1=1-6).</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb75-1" tabindex="-1"></a><span class="co">#Struttura fattoriale </span><span class="al">TEST</span><span class="co">.POLY modello graded</span></span>
+<span id="cb75-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb75-2" tabindex="-1"></a></span>
+<span id="cb75-3"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb75-3" tabindex="-1"></a>fct.str.graded <span class="ot">&lt;-</span> <span class="fu">mirt.model</span>(<span class="st">&#39;F1 = 1-6&#39;</span>)</span></code></pre></div>
+<p>Per calibrare il modello, utilizziamo sempre la funzione <code>mirt()</code>. All’interno dell’argomento model inseriremo la struttura fattoriale appena creata (<code>model=fct.str.graded)</code>. L’argomento <code>itemtype</code> va invece impostato sul modello ‘graded’.</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb76-1" tabindex="-1"></a><span class="co">#Calibrazione modello graded</span></span>
+<span id="cb76-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb76-2" tabindex="-1"></a></span>
+<span id="cb76-3"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb76-3" tabindex="-1"></a>MOD.graded <span class="ot">&lt;-</span> <span class="fu">mirt</span>(<span class="at">data=</span>TEST.POLY.item, </span>
+<span id="cb76-4"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb76-4" tabindex="-1"></a>                   <span class="at">model=</span>fct.str.graded, <span class="at">itemtype =</span> <span class="st">&quot;graded&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+Iteration: 1, Log-Lik: -4645.078, Max-Change: 1.24068
+Iteration: 2, Log-Lik: -4533.408, Max-Change: 0.84912
+Iteration: 3, Log-Lik: -4498.926, Max-Change: 0.61870
+Iteration: 4, Log-Lik: -4487.027, Max-Change: 0.25941
+Iteration: 5, Log-Lik: -4482.706, Max-Change: 0.13665
+Iteration: 6, Log-Lik: -4481.054, Max-Change: 0.08618
+Iteration: 7, Log-Lik: -4480.052, Max-Change: 0.05800
+Iteration: 8, Log-Lik: -4479.866, Max-Change: 0.03152
+Iteration: 9, Log-Lik: -4479.771, Max-Change: 0.02317
+Iteration: 10, Log-Lik: -4479.689, Max-Change: 0.01067
+Iteration: 11, Log-Lik: -4479.669, Max-Change: 0.00692
+Iteration: 12, Log-Lik: -4479.656, Max-Change: 0.00647
+Iteration: 13, Log-Lik: -4479.643, Max-Change: 0.00292
+Iteration: 14, Log-Lik: -4479.638, Max-Change: 0.00297
+Iteration: 15, Log-Lik: -4479.635, Max-Change: 0.00231
+Iteration: 16, Log-Lik: -4479.630, Max-Change: 0.00401
+Iteration: 17, Log-Lik: -4479.629, Max-Change: 0.00079
+Iteration: 18, Log-Lik: -4479.629, Max-Change: 0.00044
+Iteration: 19, Log-Lik: -4479.629, Max-Change: 0.00045
+Iteration: 20, Log-Lik: -4479.628, Max-Change: 0.00049
+Iteration: 21, Log-Lik: -4479.628, Max-Change: 0.00054
+Iteration: 22, Log-Lik: -4479.628, Max-Change: 0.00033
+Iteration: 23, Log-Lik: -4479.628, Max-Change: 0.00036
+Iteration: 24, Log-Lik: -4479.628, Max-Change: 0.00040
+Iteration: 25, Log-Lik: -4479.628, Max-Change: 0.00026
+Iteration: 26, Log-Lik: -4479.628, Max-Change: 0.00028
+Iteration: 27, Log-Lik: -4479.628, Max-Change: 0.00032
+Iteration: 28, Log-Lik: -4479.628, Max-Change: 0.00021
+Iteration: 29, Log-Lik: -4479.628, Max-Change: 0.00024
+Iteration: 30, Log-Lik: -4479.628, Max-Change: 0.00027
+Iteration: 31, Log-Lik: -4479.628, Max-Change: 0.00019
+Iteration: 32, Log-Lik: -4479.628, Max-Change: 0.00021
+Iteration: 33, Log-Lik: -4479.628, Max-Change: 0.00024
+Iteration: 34, Log-Lik: -4479.628, Max-Change: 0.00016
+Iteration: 35, Log-Lik: -4479.628, Max-Change: 0.00019
+Iteration: 36, Log-Lik: -4479.628, Max-Change: 0.00021
+Iteration: 37, Log-Lik: -4479.628, Max-Change: 0.00015
+Iteration: 38, Log-Lik: -4479.628, Max-Change: 0.00017
+Iteration: 39, Log-Lik: -4479.628, Max-Change: 0.00019
+Iteration: 40, Log-Lik: -4479.628, Max-Change: 0.00014
+Iteration: 41, Log-Lik: -4479.628, Max-Change: 0.00016
+Iteration: 42, Log-Lik: -4479.628, Max-Change: 0.00018
+Iteration: 43, Log-Lik: -4479.628, Max-Change: 0.00013
+Iteration: 44, Log-Lik: -4479.628, Max-Change: 0.00014
+Iteration: 45, Log-Lik: -4479.628, Max-Change: 0.00016
+Iteration: 46, Log-Lik: -4479.628, Max-Change: 0.00011
+Iteration: 47, Log-Lik: -4479.628, Max-Change: 0.00013
+Iteration: 48, Log-Lik: -4479.628, Max-Change: 0.00015
+Iteration: 49, Log-Lik: -4479.628, Max-Change: 0.00011
+Iteration: 50, Log-Lik: -4479.628, Max-Change: 0.00012
+Iteration: 51, Log-Lik: -4479.628, Max-Change: 0.00014
+Iteration: 52, Log-Lik: -4479.628, Max-Change: 0.00011
+Iteration: 53, Log-Lik: -4479.628, Max-Change: 0.00011
+Iteration: 54, Log-Lik: -4479.628, Max-Change: 0.00013
+Iteration: 55, Log-Lik: -4479.628, Max-Change: 0.00010
+Iteration: 56, Log-Lik: -4479.628, Max-Change: 0.00010
+Iteration: 57, Log-Lik: -4479.628, Max-Change: 0.00012
+Iteration: 58, Log-Lik: -4479.628, Max-Change: 0.00010</code></pre>
+<div id="verifica-delle-assunzioni-1" class="section level5 hasAnchor">
+<h5>Verifica delle assunzioni<a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#verifica-delle-assunzioni-1" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p>Verifichiamo ora l’assunzione di unidimensionalità tramite la statistica di Local Dependence (LD, <a href="https://doi.org/10.2307/1165285">Chen &amp; Thissen, 1997</a>) visualizzabile tramite la funzione <code>residuals()</code>.</p>
+<p>Procediamo poi osservando anche le saturazioni degli item sul fattore con la funzione <code>summary()</code>.</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb78-1" tabindex="-1"></a><span class="co">#Assunzioni graded</span></span>
+<span id="cb78-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb78-2" tabindex="-1"></a></span>
+<span id="cb78-3"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb78-3" tabindex="-1"></a><span class="fu">residuals</span>(MOD.graded,<span class="at">type=</span><span class="st">&#39;LD&#39;</span>,<span class="at">df.p=</span><span class="cn">TRUE</span>) <span class="co">#LD per il modello greaded</span></span></code></pre></div>
+<pre><code>## Degrees of freedom (lower triangle) and p-values:
+## 
+##             ITEM_POLY_1 ITEM_POLY_2 ITEM_POLY_3 ITEM_POLY_4 ITEM_POLY_5 ITEM_POLY_6
+## ITEM_POLY_1          NA       0.001       0.008       0.022       0.045       0.478
+## ITEM_POLY_2          16          NA       0.001       0.000       0.002       0.000
+## ITEM_POLY_3          16      16.000          NA       0.009       0.285       0.038
+## ITEM_POLY_4          16      16.000      16.000          NA       0.108       0.001
+## ITEM_POLY_5          16      16.000      16.000      16.000          NA       0.035
+## ITEM_POLY_6          16      16.000      16.000      16.000      16.000          NA
+## 
+## LD matrix (lower triangle) and standardized values.
+## 
+## Upper triangle summary:
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  -0.118  -0.106  -0.092  -0.023   0.089   0.113 
+## 
+##             ITEM_POLY_1 ITEM_POLY_2 ITEM_POLY_3 ITEM_POLY_4 ITEM_POLY_5 ITEM_POLY_6
+## ITEM_POLY_1          NA       0.113      -0.102      -0.096      -0.092       0.070
+## ITEM_POLY_2      40.212          NA      -0.112      -0.118      -0.109      -0.116
+## ITEM_POLY_3      32.761      39.919          NA       0.101      -0.077       0.093
+## ITEM_POLY_4      29.242      43.927      32.173          NA       0.086       0.112
+## ITEM_POLY_5      26.708      37.794      18.698      23.223          NA      -0.093
+## ITEM_POLY_6      15.640      42.481      27.294      39.625      27.577          NA</code></pre>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb80-1" tabindex="-1"></a><span class="fu">summary</span>(MOD.graded) <span class="co">#Saturazioni 1PL</span></span></code></pre></div>
+<pre><code>##                F1    h2
+## ITEM_POLY_1 0.709 0.503
+## ITEM_POLY_2 0.857 0.734
+## ITEM_POLY_3 0.621 0.386
+## ITEM_POLY_4 0.706 0.499
+## ITEM_POLY_5 0.802 0.643
+## ITEM_POLY_6 0.630 0.397
+## 
+## SS loadings:  3.161 
+## Proportion Var:  0.527 
+## 
+## Factor correlations: 
+## 
+##    F1
+## F1  1</code></pre>
+</div>
+</div>
+<div id="fit-del-modello-e-degli-item-1" class="section level4 hasAnchor">
+<h4>Fit del modello e degli item<a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#fit-del-modello-e-degli-item-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Verificate le assunzioni, è possibile procedere con il fit, prima del modello e poi degli item.</p>
+<p>Nel caso del fit del modello, utilizzeremo un’altra variante della statistica <span class="math inline">\(M_2\)</span> (<a href="#id_0">Maydeu -Olivares, &amp; Joe, 2006</a>; <a href="#id_0">Maydeu-Olivares, &amp; Joe, 2014</a>), ovvero la stastistica C2 (<a href="#id_0">Cai, &amp; Monroe, 2014</a>). A differenza della statistica <span class="math inline">\(M_2\)</span>, la statistica C2 può essere utilizzata anche con pochi item con tante categorie di risposta.</p>
+<p>Per ottenere la statistica C2 useremo sempre la funzione <code>M2()</code>, inserendo però come argomento <code>type='C2'</code>.</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb82-1" tabindex="-1"></a><span class="fu">M2</span>(MOD.graded,<span class="at">type =</span> <span class="st">&#39;C2&#39;</span>) <span class="co">#Fit Globale graded</span></span></code></pre></div>
+<pre><code>##             M2 df            p      RMSEA   RMSEA_5   RMSEA_95      SRMSR       TLI       CFI
+## stats 48.58374  9 1.986294e-07 0.07466183 0.0548381 0.09583464 0.05477425 0.9579285 0.9747571</code></pre>
+<p>Proseguiamo poi con il fit fi ogni item tramite la statistica <span class="math inline">\(S-X^2\)</span> (<a href="https://doi.org/10.1177/01466216000241003">Orlando &amp; Thissen, 2000</a>), utilizzando come soglia <em>p&lt;</em> .01.</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb84-1" tabindex="-1"></a><span class="fu">itemfit</span>(MOD.graded, <span class="at">fit_stats =</span> <span class="st">&quot;S_X2&quot;</span>, <span class="at">na.rm =</span> T) <span class="co">#fit degli item nel graded</span></span></code></pre></div>
+<pre><code>## Data does not contain missing values. Continuing normally</code></pre>
+<pre><code>## Sample size after row-wise response data removal: 790</code></pre>
+<pre><code>##          item   S_X2 df.S_X2 RMSEA.S_X2 p.S_X2
+## 1 ITEM_POLY_1 52.244      38      0.022  0.062
+## 2 ITEM_POLY_2 33.080      23      0.024  0.080
+## 3 ITEM_POLY_3 41.650      40      0.007  0.399
+## 4 ITEM_POLY_4 55.224      36      0.026  0.021
+## 5 ITEM_POLY_5 19.474      28      0.000  0.883
+## 6 ITEM_POLY_6 34.518      33      0.008  0.395</code></pre>
+</div>
+<div id="parametri-degli-item-e-response-characteristic-curves-rccs" class="section level4 hasAnchor">
+<h4>Parametri degli item e Response <strong>Characteristic</strong> Curves (RCCs)<a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#parametri-degli-item-e-response-characteristic-curves-rccs" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Tramite la funzione <code>coef()</code> richiediamo i parametri del modello.</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb88-1" tabindex="-1"></a>COEF.graded<span class="ot">&lt;-</span><span class="fu">coef</span>(MOD.graded, <span class="at">IRTpars=</span><span class="cn">TRUE</span>, <span class="at">simplify=</span><span class="cn">TRUE</span>)</span>
+<span id="cb88-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb88-2" tabindex="-1"></a>COEF.graded</span></code></pre></div>
+<pre><code>## $items
+##                 a    b1    b2    b3    b4
+## ITEM_POLY_1 1.713 0.172 1.191 2.090 2.705
+## ITEM_POLY_2 2.825 0.201 1.071 1.868 2.625
+## ITEM_POLY_3 1.348 0.533 1.455 2.424 3.373
+## ITEM_POLY_4 1.697 0.331 1.242 2.057 2.926
+## ITEM_POLY_5 2.283 0.845 1.644 2.283 3.012
+## ITEM_POLY_6 1.381 0.706 1.798 2.811 3.616
+## 
+## $means
+## F1 
+##  0 
+## 
+## $cov
+##    F1
+## F1  1</code></pre>
+<p>Proseguiamo poi con l’ispezione delle RCCs tramite la funzione <code>itemplot()</code>. Poiché è stato impostato il modello graded, impostando l’argomento type=‘trace’, otterremo le RCCs. Tramite l’argomento <code>item</code> è possibile selezionare le RCCs dell’item che si desidera visualizzare. Nell’esempio sottostante, l’item scelto è il primo (<code>item=1</code>).</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb90-1" tabindex="-1"></a><span class="fu">itemplot</span>(MOD.graded,<span class="at">type =</span> <span class="st">&#39;trace&#39;</span>, <span class="at">item =</span><span class="dv">1</span>) <span class="co">#RCC del primo item</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
+<p>Se si desidera ottenere le RCCs di tutti gli item del test con un solo comando, si può utilizzare un ciclo <code>for()</code>.</p>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb91-1" tabindex="-1"></a><span class="co"># Stampa di tutte le RCCs di tutti gli item del test  </span></span>
+<span id="cb91-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb91-2" tabindex="-1"></a></span>
+<span id="cb91-3"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb91-3" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">extract.mirt</span>(MOD.graded, <span class="st">&quot;nitems&quot;</span>)) </span>
+<span id="cb91-4"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb91-4" tabindex="-1"></a>  {<span class="fu">plot</span>(MOD.graded, <span class="at">type =</span> <span class="st">&#39;trace&#39;</span>,<span class="at">which.items =</span> i,</span>
+<span id="cb91-5"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb91-5" tabindex="-1"></a>        <span class="at">facet_items=</span><span class="cn">TRUE</span>, <span class="at">theta_lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>))} <span class="sc">%&gt;%</span>    </span>
+<span id="cb91-6"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb91-6" tabindex="-1"></a>  <span class="fu">print</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-50-1.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-50-2.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-50-3.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-50-4.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-50-5.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-50-6.png" width="672" /></p>
+</div>
+<div id="item-information-functions-iifs-e-test-information-function-tif" class="section level4 hasAnchor">
+<h4>Item Information Functions (IIFs) e Test Information Function (TIF)<a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#item-information-functions-iifs-e-test-information-function-tif" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>L’informazione apportata da ogni singolo item può essere visualizzata sempre con il comando <code>itemplot()</code>, impostando però l’argomento <code>type ='info'</code> .</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb92-1" tabindex="-1"></a><span class="fu">itemplot</span>(MOD.graded,<span class="at">type =</span><span class="st">&#39;info&#39;</span>, <span class="at">item =</span><span class="dv">1</span>) <span class="co">#IIF del primo item</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
+<p>Se si desidera ottenere tutte le IIF degli item del test con un solo comando, si può utilizzare un ciclo <code>for()</code>:</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb93-1" tabindex="-1"></a><span class="co">#IIF per il modello graded</span></span>
+<span id="cb93-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb93-2" tabindex="-1"></a></span>
+<span id="cb93-3"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb93-3" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">extract.mirt</span>(MOD.graded, <span class="st">&quot;nitems&quot;</span>))</span>
+<span id="cb93-4"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb93-4" tabindex="-1"></a>  {<span class="fu">plot</span>(MOD.graded, <span class="at">type =</span> <span class="st">&#39;infotrace&#39;</span>,  </span>
+<span id="cb93-5"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb93-5" tabindex="-1"></a>        <span class="at">which.items =</span> i,<span class="at">facet_items=</span><span class="cn">TRUE</span>, <span class="at">theta_lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>))} <span class="sc">%&gt;%</span>  </span>
+<span id="cb93-6"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb93-6" tabindex="-1"></a>  <span class="fu">print</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-52-1.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-52-2.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-52-3.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-52-4.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-52-5.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-52-6.png" width="672" /></p>
+<p>Infine, tramite la funzione <code>plot()</code> è possibile ottenere la TIF del test e l’errore di misura.</p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb94-1" tabindex="-1"></a><span class="co">#TIF modello graded</span></span>
+<span id="cb94-2"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb94-2" tabindex="-1"></a></span>
+<span id="cb94-3"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb94-3" tabindex="-1"></a><span class="fu">plot</span>(MOD.graded, <span class="at">type =</span> <span class="st">&#39;infoSE&#39;</span>,</span>
+<span id="cb94-4"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html#cb94-4" tabindex="-1"></a>     <span class="at">which.items =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">extract.mirt</span>(MOD.graded, <span class="st">&quot;nitems&quot;</span>), <span class="at">theta_lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="differential-item-functioning-per-item-politomici.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/06-Calibrazione-politomici.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

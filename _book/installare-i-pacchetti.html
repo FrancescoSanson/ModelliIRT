@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</title>
-  <meta name="description" content="Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <title>Installare i pacchetti | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</title>
+  <meta name="description" content="Installare i pacchetti | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
   <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta property="og:title" content="Installare i pacchetti | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta name="twitter:title" content="Installare i pacchetti | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
   
   
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="installare-i-pacchetti.html"/>
+<link rel="prev" href="introduzione-alla-guida.html"/>
+<link rel="next" href="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -123,7 +123,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
 
-<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -167,21 +166,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</h1>
-<p class="author"><em>a cura di Francesco Sanson</em></p>
-</div>
-<div id="introduzione-alla-guida" class="section level1 hasAnchor">
-<h1>Introduzione alla guida<a href="introduzione-alla-guida.html#introduzione-alla-guida" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>La presente guida è pensata come introduzione alla calibrazione e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT). A questo scopo, verrà utilizzato l’ambiente di siviluppo R e il pacchetto mirt (<a href="https://doi.org/10.18637/jss.v048.i06">Chalmers, 2012</a>). La guida completa all’utilizzo del pacchetto può essere scaricata da <a href="https://cran.r-project.org/web/packages/mirt/mirt.pdf">qui</a>.</p>
-<p>Sebbene il pacchetto mirt permetta di effettuare la calibrazione sia di strumenti unidimensionali che multidimensionali, questa guida sarà focalizzata sui modelli unidimensionali. Per quanto riguarda gli strumenti undimensionali dicotomici, verranno utilizzati i seguenti modelli:</p>
-<ul>
-<li><p>ad un parametro (1PL; Birnbaum, 1968; <a href="https://psycnet.apa.org/record/1991-98425-000">Hambleton et al., 1991</a>);</p></li>
-<li><p>due parametri (2PL; Birnbaum, 1968);</p></li>
-</ul>
-<p>Verrà, inoltre, fatto un accenno al modello 3PL (Birnbaum, 1968).</p>
-<p>Per quanto riguarda gli strumenti unidimensionali politomici, verrà utilizzato il modello graded (<a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1968.tb00153.x">Samejima, 1968</a>).</p>
-<p>Verrà poi mostrato come condurre il Differential Item Functioning (DIF; <a href="#id_0" style="font-size: 12pt;">Thissen et al., 1988</a>). Infine, verrà mostrato come effettuare lo scoring di uno strumento utilizzando l’ Expected a Posteriori Score (EAP; <a href="https://doi.org/10.1177/014662168200600405">Bock e Mislevy, 1982</a>).</p>
+<div id="installare-i-pacchetti" class="section level1 hasAnchor">
+<h1>Installare i pacchetti<a href="installare-i-pacchetti.html#installare-i-pacchetti" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Per prima cosa, installiamo il pacchetto mirt tramite il comando <code>install.packages('mirt')</code> o tramite l’interfaccia di RStudio.</p>
+<p>Installiamo poi la <a href="https://www.tidyverse.org">libreria tidyverse</a> (<a href="https://joss.theoj.org/papers/10.21105/joss.01686">Wickham et al., 2019</a>) , la quale ci servirà per alcune operazioni da svolgere durante il tutorial.</p>
+<p><code>install.packages('tidyverse')</code></p>
+<p>Installiamo, infine, la libreria haven (<a href="https://CRAN.R-project.org/package=haven">Wickham &amp; Miller, 2021</a>) per l’importazione di dati in formato .sav (in <a href="https://posit.co/download/rstudio-desktop/">RStudio</a> la libreria è già installata).</p>
+<p><code>install.packages('haven')</code></p>
+<p>Come sempre in R, prima di iniziare a lavorare, carichiamo le librerie.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="installare-i-pacchetti.html#cb1-1" tabindex="-1"></a><span class="fu">library</span>(mirt)</span>
+<span id="cb1-2"><a href="installare-i-pacchetti.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="installare-i-pacchetti.html#cb1-3" tabindex="-1"></a><span class="fu">library</span>(haven)</span></code></pre></div>
+<p>Proseguiremo ora prima all’analisi dei modelli unidimensionali dicotomici e poi ai modelli unidimensionali politomici.</p>
 
 </div>
             </section>
@@ -189,8 +185,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-
-<a href="installare-i-pacchetti.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="introduzione-alla-guida.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -221,7 +217,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/01-introduzione.Rmd",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/02-Caricare-librerie.Rmd",
 "text": "Edit"
 },
 "history": {

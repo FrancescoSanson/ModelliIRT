@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Page not found | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</title>
-  <meta name="description" content="Page not found | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <title>Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</title>
+  <meta name="description" content="Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
   <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Page not found | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta property="og:title" content="Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Page not found | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta name="twitter:title" content="Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
   
   
   
@@ -30,7 +30,7 @@
   
   
 
-
+<link rel="next" href="installare-i-pacchetti.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -123,7 +123,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
 
-<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -167,11 +166,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="page-not-found" class="section level1">
-<h1>Page not found</h1>
-<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
-<p>You may want to try searching to find the page's new location, or use
-the table of contents to find the page you are looking for.</p>
+<div id="header">
+<h1 class="title">Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</h1>
+<p class="author"><em>a cura di Francesco Sanson</em></p>
+</div>
+<div id="introduzione-alla-guida" class="section level1 hasAnchor">
+<h1>Introduzione alla guida<a href="introduzione-alla-guida.html#introduzione-alla-guida" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>La presente guida è pensata come introduzione alla calibrazione e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT). A questo scopo, verrà utilizzato l’ambiente di siviluppo R e il pacchetto mirt (<a href="https://doi.org/10.18637/jss.v048.i06">Chalmers, 2012</a>). La guida completa all’utilizzo del pacchetto può essere scaricata da <a href="https://cran.r-project.org/web/packages/mirt/mirt.pdf">qui</a>.</p>
+<p>Sebbene il pacchetto mirt permetta di effettuare la calibrazione sia di strumenti unidimensionali che multidimensionali, questa guida sarà focalizzata sui modelli unidimensionali. Per quanto riguarda gli strumenti undimensionali dicotomici, verranno utilizzati i seguenti modelli:</p>
+<ul>
+<li><p>ad un parametro (1PL; Birnbaum, 1968; <a href="https://psycnet.apa.org/record/1991-98425-000">Hambleton et al., 1991</a>);</p></li>
+<li><p>due parametri (2PL; Birnbaum, 1968);</p></li>
+</ul>
+<p>Verrà, inoltre, fatto un accenno al modello 3PL (Birnbaum, 1968).</p>
+<p>Per quanto riguarda gli strumenti unidimensionali politomici, verrà utilizzato il modello graded (<a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/j.2333-8504.1968.tb00153.x">Samejima, 1968</a>).</p>
+<p>Verrà poi mostrato come condurre il Differential Item Functioning (DIF; <a href="#id_0" style="font-size: 12pt;">Thissen et al., 1988</a>). Infine, verrà mostrato come effettuare lo scoring di uno strumento utilizzando l’ Expected a Posteriori Score (EAP; <a href="https://doi.org/10.1177/014662168200600405">Bock e Mislevy, 1982</a>).</p>
+
 </div>
             </section>
 
@@ -179,7 +189,7 @@ the table of contents to find the page you are looking for.</p>
         </div>
       </div>
 
-
+<a href="installare-i-pacchetti.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -210,7 +220,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/%s",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/01-introduzione.Rmd",
 "text": "Edit"
 },
 "history": {

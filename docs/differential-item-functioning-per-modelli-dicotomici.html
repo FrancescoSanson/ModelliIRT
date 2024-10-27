@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Differential Item Functioning per modelli dicotomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</title>
+  <meta name="description" content="Differential Item Functioning per modelli dicotomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Differential Item Functioning per modelli dicotomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Differential Item Functioning per modelli dicotomici | Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R" />
+  
+  
+  
+
+<meta name="author" content="a cura di Francesco Sanson" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html"/>
+<link rel="next" href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Guida IRT</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="introduzione-alla-guida.html"><a href="introduzione-alla-guida.html"><i class="fa fa-check"></i>Introduzione alla guida</a></li>
+<li class="chapter" data-level="" data-path="installare-i-pacchetti.html"><a href="installare-i-pacchetti.html"><i class="fa fa-check"></i>Installare i pacchetti</a></li>
+<li class="chapter" data-level="" data-path="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html"><a href="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html"><i class="fa fa-check"></i>Calibrazione di strumenti unidimensionali con item dicotomici</a></li>
+<li class="chapter" data-level="" data-path="differential-item-functioning-per-modelli-dicotomici.html"><a href="differential-item-functioning-per-modelli-dicotomici.html"><i class="fa fa-check"></i>Differential Item Functioning per modelli dicotomici</a></li>
+<li class="chapter" data-level="" data-path="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html"><a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html"><i class="fa fa-check"></i>Scoring di strumenti unidimensionali con item dicotomici</a></li>
+<li class="chapter" data-level="" data-path="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html"><a href="calibrazione-di-strumenti-unidimensionali-con-item-politomici.html"><i class="fa fa-check"></i>Calibrazione di strumenti unidimensionali con item politomici</a></li>
+<li class="chapter" data-level="" data-path="differential-item-functioning-per-item-politomici.html"><a href="differential-item-functioning-per-item-politomici.html"><i class="fa fa-check"></i>Differential Item Functioning per item politomici</a></li>
+<li class="chapter" data-level="" data-path="scoring-di-strumenti-unidimensionali-politomici.html"><a href="scoring-di-strumenti-unidimensionali-politomici.html"><i class="fa fa-check"></i>Scoring di strumenti unidimensionali politomici</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Guida pratica alla calibrazione, allo studio dell’invarianza e allo scoring di strumenti psicologici tramite l’Item Response Theory (IRT) in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="differential-item-functioning-per-modelli-dicotomici" class="section level1 hasAnchor">
+<h1>Differential Item Functioning per modelli dicotomici<a href="differential-item-functioning-per-modelli-dicotomici.html#differential-item-functioning-per-modelli-dicotomici" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>All’interno del framework dell’Item Response Theory (IRT) è anche possibile studiare l’invarianza di una scala a livello dell’Item, tramite la procedura del Differential Item Functioning (DIF). Esitono diversi approcci al DIF, fra i quali il metodo Mantzel-Haenszel (<a href="https://pubmed.ncbi.nlm.nih.gov/13655060/">Mantzel, &amp; Haenszel, 1959</a>; <a href="https://psycnet.apa.org/record/1988-97024-009">Holland, &amp; Thayer,1988</a>), la regressione logistica (<a href="#id_0" style="font-size: 12pt;">Swaminathan, &amp; Rogers, 1990</a>) e il Likelihood Ratio Test (<a href="#id_0" style="font-size: 12pt;">Thissen et al., 1988</a>). Di seguito approfondiremo quest’ultimo.</p>
+<p>Per illustrare il DIF utilizzeremo il database TEST.DIC. Condurremo lo studio dell’invarianza di genere utilizzando la variabile sex (1=male; 2=female).</p>
+<p>Per prima cosa selezioniamo la variabile gruppo.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb32-1" tabindex="-1"></a>GRUPPO<span class="ot">&lt;-</span><span class="fu">as.factor</span>(TEST.DIC<span class="sc">$</span>sex) <span class="co">#var. gruppo</span></span></code></pre></div>
+<p>Selezioniamo poi gli item sui quali condurre l’invarianza.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb33-1" tabindex="-1"></a>item.DIF<span class="ot">&lt;-</span>TEST.DIC[,<span class="dv">3</span><span class="sc">:</span><span class="dv">9</span>]  <span class="co">#item per DIF</span></span></code></pre></div>
+<p>Definiamo poi la struttura fattoriale, come già fatto in precedenza.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb34-1" tabindex="-1"></a>fct.str.DIF <span class="ot">&lt;-</span> <span class="fu">mirt.model</span>(<span class="st">&#39;F1 = 1-7&#39;</span>)</span></code></pre></div>
+<p>Infine, creiamo un oggetto contenente il tipo di modello, per non doverlo inserire in ogni passaggio.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb35-1" tabindex="-1"></a>tipo.mod<span class="ot">&lt;-</span><span class="st">&#39;2PL&#39;</span>  </span></code></pre></div>
+<div id="stima-dei-parametri-nei-due-gruppi" class="section level4 hasAnchor">
+<h4>Stima dei parametri nei due gruppi<a href="differential-item-functioning-per-modelli-dicotomici.html#stima-dei-parametri-nei-due-gruppi" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Procediamo alla stima dei parametri degli item nel gruppo di maschi <code>(GRUPPO==1)</code>.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb36-1" tabindex="-1"></a>mod.group1<span class="ot">&lt;-</span><span class="fu">filter</span>(item.DIF, GRUPPO<span class="sc">==</span><span class="st">&#39;1&#39;</span>)<span class="sc">%&gt;%</span>   <span class="co">#inserire etichetta primo gruppo</span></span>
+<span id="cb36-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb36-2" tabindex="-1"></a>  <span class="fu">mirt</span>(<span class="at">model=</span>fct.str.DIF, <span class="at">itemtype =</span> tipo.mod) <span class="co">#es: GRUPPO == &#39;1&#39;</span></span></code></pre></div>
+<pre><code>## 
+Iteration: 1, Log-Lik: -843.738, Max-Change: 0.61586
+Iteration: 2, Log-Lik: -821.640, Max-Change: 0.44042
+Iteration: 3, Log-Lik: -814.473, Max-Change: 0.28525
+Iteration: 4, Log-Lik: -812.296, Max-Change: 0.17850
+Iteration: 5, Log-Lik: -811.599, Max-Change: 0.11333
+Iteration: 6, Log-Lik: -811.361, Max-Change: 0.07228
+Iteration: 7, Log-Lik: -811.248, Max-Change: 0.03180
+Iteration: 8, Log-Lik: -811.234, Max-Change: 0.02210
+Iteration: 9, Log-Lik: -811.229, Max-Change: 0.01378
+Iteration: 10, Log-Lik: -811.226, Max-Change: 0.00758
+Iteration: 11, Log-Lik: -811.225, Max-Change: 0.00510
+Iteration: 12, Log-Lik: -811.224, Max-Change: 0.00357
+Iteration: 13, Log-Lik: -811.224, Max-Change: 0.00131
+Iteration: 14, Log-Lik: -811.224, Max-Change: 0.00123
+Iteration: 15, Log-Lik: -811.224, Max-Change: 0.00046
+Iteration: 16, Log-Lik: -811.224, Max-Change: 0.00040
+Iteration: 17, Log-Lik: -811.224, Max-Change: 0.00034
+Iteration: 18, Log-Lik: -811.224, Max-Change: 0.00029
+Iteration: 19, Log-Lik: -811.224, Max-Change: 0.00021
+Iteration: 20, Log-Lik: -811.224, Max-Change: 0.00019
+Iteration: 21, Log-Lik: -811.224, Max-Change: 0.00017
+Iteration: 22, Log-Lik: -811.224, Max-Change: 0.00015
+Iteration: 23, Log-Lik: -811.224, Max-Change: 0.00014
+Iteration: 24, Log-Lik: -811.224, Max-Change: 0.00012
+Iteration: 25, Log-Lik: -811.224, Max-Change: 0.00011
+Iteration: 26, Log-Lik: -811.224, Max-Change: 0.00010
+Iteration: 27, Log-Lik: -811.224, Max-Change: 0.00009</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb38-1" tabindex="-1"></a><span class="fu">coef</span>(mod.group1, <span class="at">simplify=</span><span class="cn">TRUE</span>, <span class="at">IRTpars=</span>T)    <span class="co">#stampa dei parametri</span></span></code></pre></div>
+<pre><code>## $items
+##                a      b g u
+## ITEM_DIC_1 2.694  0.328 0 1
+## ITEM_DIC_2 1.583  1.532 0 1
+## ITEM_DIC_3 1.782  0.944 0 1
+## ITEM_DIC_4 2.165  0.234 0 1
+## ITEM_DIC_5 1.717 -1.063 0 1
+## ITEM_DIC_6 0.592 -1.879 0 1
+## ITEM_DIC_7 1.289  0.790 0 1
+## 
+## $means
+## F1 
+##  0 
+## 
+## $cov
+##    F1
+## F1  1</code></pre>
+<p>Stimiamo poi i parametri nel gruppo delle femmine <code>(GRUPPO==2)</code>.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb40-1" tabindex="-1"></a>mod.group2<span class="ot">&lt;-</span><span class="fu">filter</span>(item.DIF, GRUPPO<span class="sc">==</span><span class="st">&#39;2&#39;</span>)<span class="sc">%&gt;%</span> <span class="co">#inserire etichetta secondo gruppo</span></span>
+<span id="cb40-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb40-2" tabindex="-1"></a>  <span class="fu">mirt</span>(<span class="at">model=</span>fct.str.DIF, <span class="at">itemtype =</span> tipo.mod) <span class="co">#es: GRUPPO == &#39;2&#39;</span></span></code></pre></div>
+<pre><code>## 
+Iteration: 1, Log-Lik: -694.990, Max-Change: 0.82420
+Iteration: 2, Log-Lik: -674.419, Max-Change: 0.66239
+Iteration: 3, Log-Lik: -667.961, Max-Change: 0.50617
+Iteration: 4, Log-Lik: -665.768, Max-Change: 0.38798
+Iteration: 5, Log-Lik: -664.889, Max-Change: 0.30633
+Iteration: 6, Log-Lik: -664.484, Max-Change: 0.24955
+Iteration: 7, Log-Lik: -664.024, Max-Change: 0.11400
+Iteration: 8, Log-Lik: -663.991, Max-Change: 0.10336
+Iteration: 9, Log-Lik: -663.968, Max-Change: 0.09343
+Iteration: 10, Log-Lik: -663.906, Max-Change: 0.04630
+Iteration: 11, Log-Lik: -663.902, Max-Change: 0.04024
+Iteration: 12, Log-Lik: -663.900, Max-Change: 0.03196
+Iteration: 13, Log-Lik: -663.895, Max-Change: 0.02119
+Iteration: 14, Log-Lik: -663.895, Max-Change: 0.02255
+Iteration: 15, Log-Lik: -663.894, Max-Change: 0.01832
+Iteration: 16, Log-Lik: -663.892, Max-Change: 0.01618
+Iteration: 17, Log-Lik: -663.892, Max-Change: 0.01486
+Iteration: 18, Log-Lik: -663.892, Max-Change: 0.01147
+Iteration: 19, Log-Lik: -663.891, Max-Change: 0.01189
+Iteration: 20, Log-Lik: -663.891, Max-Change: 0.00638
+Iteration: 21, Log-Lik: -663.891, Max-Change: 0.00039
+Iteration: 22, Log-Lik: -663.891, Max-Change: 0.00039
+Iteration: 23, Log-Lik: -663.891, Max-Change: 0.00538
+Iteration: 24, Log-Lik: -663.891, Max-Change: 0.00185
+Iteration: 25, Log-Lik: -663.891, Max-Change: 0.00036
+Iteration: 26, Log-Lik: -663.891, Max-Change: 0.00183
+Iteration: 27, Log-Lik: -663.891, Max-Change: 0.00538
+Iteration: 28, Log-Lik: -663.891, Max-Change: 0.00040
+Iteration: 29, Log-Lik: -663.891, Max-Change: 0.00166
+Iteration: 30, Log-Lik: -663.891, Max-Change: 0.00485
+Iteration: 31, Log-Lik: -663.891, Max-Change: 0.00034
+Iteration: 32, Log-Lik: -663.891, Max-Change: 0.00030
+Iteration: 33, Log-Lik: -663.891, Max-Change: 0.00416
+Iteration: 34, Log-Lik: -663.891, Max-Change: 0.00144
+Iteration: 35, Log-Lik: -663.891, Max-Change: 0.00075
+Iteration: 36, Log-Lik: -663.891, Max-Change: 0.00030
+Iteration: 37, Log-Lik: -663.891, Max-Change: 0.00028
+Iteration: 38, Log-Lik: -663.891, Max-Change: 0.00141
+Iteration: 39, Log-Lik: -663.891, Max-Change: 0.00040
+Iteration: 40, Log-Lik: -663.891, Max-Change: 0.00028
+Iteration: 41, Log-Lik: -663.891, Max-Change: 0.00138
+Iteration: 42, Log-Lik: -663.891, Max-Change: 0.00049
+Iteration: 43, Log-Lik: -663.891, Max-Change: 0.00027
+Iteration: 44, Log-Lik: -663.891, Max-Change: 0.00135
+Iteration: 45, Log-Lik: -663.891, Max-Change: 0.00056
+Iteration: 46, Log-Lik: -663.891, Max-Change: 0.00027
+Iteration: 47, Log-Lik: -663.891, Max-Change: 0.00132
+Iteration: 48, Log-Lik: -663.891, Max-Change: 0.00058
+Iteration: 49, Log-Lik: -663.891, Max-Change: 0.00026
+Iteration: 50, Log-Lik: -663.891, Max-Change: 0.00129
+Iteration: 51, Log-Lik: -663.891, Max-Change: 0.00058
+Iteration: 52, Log-Lik: -663.891, Max-Change: 0.00025
+Iteration: 53, Log-Lik: -663.891, Max-Change: 0.00126
+Iteration: 54, Log-Lik: -663.891, Max-Change: 0.00058
+Iteration: 55, Log-Lik: -663.891, Max-Change: 0.00025
+Iteration: 56, Log-Lik: -663.891, Max-Change: 0.00124
+Iteration: 57, Log-Lik: -663.891, Max-Change: 0.00057
+Iteration: 58, Log-Lik: -663.891, Max-Change: 0.00024
+Iteration: 59, Log-Lik: -663.891, Max-Change: 0.00121
+Iteration: 60, Log-Lik: -663.891, Max-Change: 0.00056
+Iteration: 61, Log-Lik: -663.891, Max-Change: 0.00024
+Iteration: 62, Log-Lik: -663.891, Max-Change: 0.00118
+Iteration: 63, Log-Lik: -663.891, Max-Change: 0.00055
+Iteration: 64, Log-Lik: -663.891, Max-Change: 0.00023
+Iteration: 65, Log-Lik: -663.891, Max-Change: 0.00116
+Iteration: 66, Log-Lik: -663.891, Max-Change: 0.00054
+Iteration: 67, Log-Lik: -663.891, Max-Change: 0.00023
+Iteration: 68, Log-Lik: -663.891, Max-Change: 0.00113
+Iteration: 69, Log-Lik: -663.891, Max-Change: 0.00053
+Iteration: 70, Log-Lik: -663.891, Max-Change: 0.00022
+Iteration: 71, Log-Lik: -663.891, Max-Change: 0.00111
+Iteration: 72, Log-Lik: -663.891, Max-Change: 0.00052
+Iteration: 73, Log-Lik: -663.891, Max-Change: 0.00022
+Iteration: 74, Log-Lik: -663.891, Max-Change: 0.00109
+Iteration: 75, Log-Lik: -663.891, Max-Change: 0.00051
+Iteration: 76, Log-Lik: -663.891, Max-Change: 0.00021
+Iteration: 77, Log-Lik: -663.891, Max-Change: 0.00106
+Iteration: 78, Log-Lik: -663.891, Max-Change: 0.00049
+Iteration: 79, Log-Lik: -663.891, Max-Change: 0.00021
+Iteration: 80, Log-Lik: -663.891, Max-Change: 0.00104
+Iteration: 81, Log-Lik: -663.891, Max-Change: 0.00048
+Iteration: 82, Log-Lik: -663.891, Max-Change: 0.00021
+Iteration: 83, Log-Lik: -663.891, Max-Change: 0.00102
+Iteration: 84, Log-Lik: -663.891, Max-Change: 0.00047
+Iteration: 85, Log-Lik: -663.891, Max-Change: 0.00020
+Iteration: 86, Log-Lik: -663.891, Max-Change: 0.00100
+Iteration: 87, Log-Lik: -663.891, Max-Change: 0.00046
+Iteration: 88, Log-Lik: -663.891, Max-Change: 0.00020
+Iteration: 89, Log-Lik: -663.891, Max-Change: 0.00098
+Iteration: 90, Log-Lik: -663.891, Max-Change: 0.00045
+Iteration: 91, Log-Lik: -663.891, Max-Change: 0.00019
+Iteration: 92, Log-Lik: -663.891, Max-Change: 0.00096
+Iteration: 93, Log-Lik: -663.891, Max-Change: 0.00045
+Iteration: 94, Log-Lik: -663.891, Max-Change: 0.00019
+Iteration: 95, Log-Lik: -663.891, Max-Change: 0.00094
+Iteration: 96, Log-Lik: -663.891, Max-Change: 0.00044
+Iteration: 97, Log-Lik: -663.891, Max-Change: 0.00018
+Iteration: 98, Log-Lik: -663.891, Max-Change: 0.00092
+Iteration: 99, Log-Lik: -663.891, Max-Change: 0.00043
+Iteration: 100, Log-Lik: -663.891, Max-Change: 0.00018
+Iteration: 101, Log-Lik: -663.891, Max-Change: 0.00090
+Iteration: 102, Log-Lik: -663.891, Max-Change: 0.00042
+Iteration: 103, Log-Lik: -663.891, Max-Change: 0.00018
+Iteration: 104, Log-Lik: -663.891, Max-Change: 0.00088
+Iteration: 105, Log-Lik: -663.891, Max-Change: 0.00041
+Iteration: 106, Log-Lik: -663.891, Max-Change: 0.00017
+Iteration: 107, Log-Lik: -663.891, Max-Change: 0.00086
+Iteration: 108, Log-Lik: -663.891, Max-Change: 0.00040
+Iteration: 109, Log-Lik: -663.891, Max-Change: 0.00017
+Iteration: 110, Log-Lik: -663.891, Max-Change: 0.00084
+Iteration: 111, Log-Lik: -663.891, Max-Change: 0.00039
+Iteration: 112, Log-Lik: -663.891, Max-Change: 0.00017
+Iteration: 113, Log-Lik: -663.891, Max-Change: 0.00083
+Iteration: 114, Log-Lik: -663.891, Max-Change: 0.00038
+Iteration: 115, Log-Lik: -663.891, Max-Change: 0.00016
+Iteration: 116, Log-Lik: -663.891, Max-Change: 0.00081
+Iteration: 117, Log-Lik: -663.891, Max-Change: 0.00038
+Iteration: 118, Log-Lik: -663.891, Max-Change: 0.00016
+Iteration: 119, Log-Lik: -663.891, Max-Change: 0.00079
+Iteration: 120, Log-Lik: -663.891, Max-Change: 0.00037
+Iteration: 121, Log-Lik: -663.891, Max-Change: 0.00016
+Iteration: 122, Log-Lik: -663.891, Max-Change: 0.00078
+Iteration: 123, Log-Lik: -663.891, Max-Change: 0.00036
+Iteration: 124, Log-Lik: -663.891, Max-Change: 0.00015
+Iteration: 125, Log-Lik: -663.891, Max-Change: 0.00076
+Iteration: 126, Log-Lik: -663.891, Max-Change: 0.00035
+Iteration: 127, Log-Lik: -663.891, Max-Change: 0.00015
+Iteration: 128, Log-Lik: -663.891, Max-Change: 0.00074
+Iteration: 129, Log-Lik: -663.891, Max-Change: 0.00035
+Iteration: 130, Log-Lik: -663.891, Max-Change: 0.00015
+Iteration: 131, Log-Lik: -663.891, Max-Change: 0.00073
+Iteration: 132, Log-Lik: -663.891, Max-Change: 0.00034
+Iteration: 133, Log-Lik: -663.891, Max-Change: 0.00014
+Iteration: 134, Log-Lik: -663.891, Max-Change: 0.00071
+Iteration: 135, Log-Lik: -663.891, Max-Change: 0.00033
+Iteration: 136, Log-Lik: -663.891, Max-Change: 0.00014
+Iteration: 137, Log-Lik: -663.891, Max-Change: 0.00070
+Iteration: 138, Log-Lik: -663.891, Max-Change: 0.00032
+Iteration: 139, Log-Lik: -663.891, Max-Change: 0.00014
+Iteration: 140, Log-Lik: -663.891, Max-Change: 0.00068
+Iteration: 141, Log-Lik: -663.891, Max-Change: 0.00032
+Iteration: 142, Log-Lik: -663.891, Max-Change: 0.00014
+Iteration: 143, Log-Lik: -663.891, Max-Change: 0.00067
+Iteration: 144, Log-Lik: -663.891, Max-Change: 0.00031
+Iteration: 145, Log-Lik: -663.891, Max-Change: 0.00013
+Iteration: 146, Log-Lik: -663.891, Max-Change: 0.00066
+Iteration: 147, Log-Lik: -663.891, Max-Change: 0.00031
+Iteration: 148, Log-Lik: -663.891, Max-Change: 0.00013
+Iteration: 149, Log-Lik: -663.891, Max-Change: 0.00064
+Iteration: 150, Log-Lik: -663.891, Max-Change: 0.00030
+Iteration: 151, Log-Lik: -663.891, Max-Change: 0.00013
+Iteration: 152, Log-Lik: -663.891, Max-Change: 0.00063
+Iteration: 153, Log-Lik: -663.891, Max-Change: 0.00029
+Iteration: 154, Log-Lik: -663.891, Max-Change: 0.00012
+Iteration: 155, Log-Lik: -663.891, Max-Change: 0.00062
+Iteration: 156, Log-Lik: -663.891, Max-Change: 0.00029
+Iteration: 157, Log-Lik: -663.891, Max-Change: 0.00012
+Iteration: 158, Log-Lik: -663.891, Max-Change: 0.00061
+Iteration: 159, Log-Lik: -663.891, Max-Change: 0.00028
+Iteration: 160, Log-Lik: -663.891, Max-Change: 0.00012
+Iteration: 161, Log-Lik: -663.891, Max-Change: 0.00059
+Iteration: 162, Log-Lik: -663.891, Max-Change: 0.00028
+Iteration: 163, Log-Lik: -663.891, Max-Change: 0.00012
+Iteration: 164, Log-Lik: -663.891, Max-Change: 0.00058
+Iteration: 165, Log-Lik: -663.891, Max-Change: 0.00027
+Iteration: 166, Log-Lik: -663.891, Max-Change: 0.00011
+Iteration: 167, Log-Lik: -663.891, Max-Change: 0.00057
+Iteration: 168, Log-Lik: -663.891, Max-Change: 0.00026
+Iteration: 169, Log-Lik: -663.891, Max-Change: 0.00011
+Iteration: 170, Log-Lik: -663.891, Max-Change: 0.00056
+Iteration: 171, Log-Lik: -663.891, Max-Change: 0.00026
+Iteration: 172, Log-Lik: -663.891, Max-Change: 0.00011
+Iteration: 173, Log-Lik: -663.891, Max-Change: 0.00055
+Iteration: 174, Log-Lik: -663.891, Max-Change: 0.00025
+Iteration: 175, Log-Lik: -663.891, Max-Change: 0.00011
+Iteration: 176, Log-Lik: -663.891, Max-Change: 0.00054
+Iteration: 177, Log-Lik: -663.891, Max-Change: 0.00025
+Iteration: 178, Log-Lik: -663.891, Max-Change: 0.00011
+Iteration: 179, Log-Lik: -663.891, Max-Change: 0.00052
+Iteration: 180, Log-Lik: -663.891, Max-Change: 0.00024
+Iteration: 181, Log-Lik: -663.891, Max-Change: 0.00010
+Iteration: 182, Log-Lik: -663.891, Max-Change: 0.00051
+Iteration: 183, Log-Lik: -663.891, Max-Change: 0.00024
+Iteration: 184, Log-Lik: -663.891, Max-Change: 0.00010
+Iteration: 185, Log-Lik: -663.891, Max-Change: 0.00050
+Iteration: 186, Log-Lik: -663.891, Max-Change: 0.00023
+Iteration: 187, Log-Lik: -663.891, Max-Change: 0.00010</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb42-1" tabindex="-1"></a><span class="fu">coef</span>(mod.group2, <span class="at">simplify=</span><span class="cn">TRUE</span>, <span class="at">IRTpars=</span>T)    <span class="co">#stampa dei parametri</span></span></code></pre></div>
+<pre><code>## $items
+##                a      b g u
+## ITEM_DIC_1 1.296  0.102 0 1
+## ITEM_DIC_2 2.488  1.273 0 1
+## ITEM_DIC_3 1.366  0.347 0 1
+## ITEM_DIC_4 5.669 -0.074 0 1
+## ITEM_DIC_5 1.653 -1.398 0 1
+## ITEM_DIC_6 1.020 -0.671 0 1
+## ITEM_DIC_7 1.437  0.541 0 1
+## 
+## $means
+## F1 
+##  0 
+## 
+## $cov
+##    F1
+## F1  1</code></pre>
+</div>
+<div id="primo-step-della-procedura-di-purificazione" class="section level4 hasAnchor">
+<h4>Primo step della procedura di purificazione<a href="differential-item-functioning-per-modelli-dicotomici.html#primo-step-della-procedura-di-purificazione" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Il primo step della procedura di purificazione prevede di stimare un modello di partenza dove tutti i parametri degli item sono vincolati ad essere uguali nei due gruppi. Inoltre, le medie e le varianze vengono fissate a 0 e 1 nel primo gruppo (gruppo di riferimento) e lasciate libere di essere stimate nel secondo gruppo (gruppo focale).</p>
+<p>La funzione che permette di creare questo modello è denominata <code>multiplegroup()</code>. L’argomento invariance() permette di impostare i vincoli sopra esposti. Tramite <code>colnames(item.DIF)</code> imponiamo i vincoli ai parametri degl item, mentre tramite <code>'free_means'</code> e <code>'free_var'</code> impostiamo i vincoli alle medie e alle varianze.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb44-1" tabindex="-1"></a>mod.dif<span class="fl">.1</span><span class="ot">&lt;-</span> <span class="fu">multipleGroup</span>(item.DIF,<span class="at">model=</span> fct.str.DIF,</span>
+<span id="cb44-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb44-2" tabindex="-1"></a>                       <span class="at">itemtype =</span> tipo.mod, </span>
+<span id="cb44-3"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb44-3" tabindex="-1"></a>                       <span class="at">group =</span>GRUPPO,<span class="at">SE=</span><span class="cn">TRUE</span>, </span>
+<span id="cb44-4"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb44-4" tabindex="-1"></a>                       <span class="at">invariance =</span> <span class="fu">c</span>(<span class="fu">colnames</span>(item.DIF),</span>
+<span id="cb44-5"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb44-5" tabindex="-1"></a>                                      <span class="st">&#39;free_means&#39;</span>, <span class="st">&#39;free_var&#39;</span>))</span></code></pre></div>
+<pre><code>## NA values in group removed, along with associated rows in data</code></pre>
+<pre><code>## 
+Iteration: 1, Log-Lik: -1552.108, Max-Change: 0.60151
+Iteration: 2, Log-Lik: -1506.706, Max-Change: 0.41758
+Iteration: 3, Log-Lik: -1496.243, Max-Change: 0.26373
+Iteration: 4, Log-Lik: -1493.722, Max-Change: 0.17436
+Iteration: 5, Log-Lik: -1492.739, Max-Change: 0.12205
+Iteration: 6, Log-Lik: -1492.193, Max-Change: 0.08904
+Iteration: 7, Log-Lik: -1491.607, Max-Change: 0.06614
+Iteration: 8, Log-Lik: -1491.381, Max-Change: 0.03897
+Iteration: 9, Log-Lik: -1491.272, Max-Change: 0.02826
+Iteration: 10, Log-Lik: -1491.162, Max-Change: 0.03725
+Iteration: 11, Log-Lik: -1491.086, Max-Change: 0.02077
+Iteration: 12, Log-Lik: -1491.056, Max-Change: 0.01477
+Iteration: 13, Log-Lik: -1491.028, Max-Change: 0.01621
+Iteration: 14, Log-Lik: -1491.012, Max-Change: 0.01041
+Iteration: 15, Log-Lik: -1491.003, Max-Change: 0.00799
+Iteration: 16, Log-Lik: -1490.997, Max-Change: 0.01339
+Iteration: 17, Log-Lik: -1490.985, Max-Change: 0.00666
+Iteration: 18, Log-Lik: -1490.983, Max-Change: 0.00439
+Iteration: 19, Log-Lik: -1490.981, Max-Change: 0.00353
+Iteration: 20, Log-Lik: -1490.980, Max-Change: 0.00279
+Iteration: 21, Log-Lik: -1490.979, Max-Change: 0.00234
+Iteration: 22, Log-Lik: -1490.979, Max-Change: 0.00461
+Iteration: 23, Log-Lik: -1490.977, Max-Change: 0.00217
+Iteration: 24, Log-Lik: -1490.977, Max-Change: 0.00137
+Iteration: 25, Log-Lik: -1490.977, Max-Change: 0.00101
+Iteration: 26, Log-Lik: -1490.976, Max-Change: 0.00083
+Iteration: 27, Log-Lik: -1490.976, Max-Change: 0.00070
+Iteration: 28, Log-Lik: -1490.976, Max-Change: 0.00141
+Iteration: 29, Log-Lik: -1490.976, Max-Change: 0.00067
+Iteration: 30, Log-Lik: -1490.976, Max-Change: 0.00043
+Iteration: 31, Log-Lik: -1490.976, Max-Change: 0.00032
+Iteration: 32, Log-Lik: -1490.976, Max-Change: 0.00026
+Iteration: 33, Log-Lik: -1490.976, Max-Change: 0.00022
+Iteration: 34, Log-Lik: -1490.976, Max-Change: 0.00046
+Iteration: 35, Log-Lik: -1490.976, Max-Change: 0.00021
+Iteration: 36, Log-Lik: -1490.976, Max-Change: 0.00013
+Iteration: 37, Log-Lik: -1490.976, Max-Change: 0.00010
+## 
+## Calculating information matrix...</code></pre>
+<p>A partire da questo modello, è possibile stimare il DIF al primo step di interazione tramite la funzione <code>DIF()</code>. Impostando la voce scheme=‘drop’, procediamo rimuovendo i vincoli degli item uno ad uno per essere confrontati tramite il Chi-Quadro nei due gruppi.</p>
+<p>La stima del DIF viene eseguita prima nei parametri relativi alla capacità discriminativa (<em>a</em>), inserendo la voce <code>which.par = 'a1'</code> (Il parametro “a” è indicato sempre come “a1” in mirt).</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb47-1" tabindex="-1"></a><span class="fu">DIF</span>(mod.dif<span class="fl">.1</span>,<span class="at">which.par =</span> <span class="st">&#39;a1&#39;</span>,</span>
+<span id="cb47-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb47-2" tabindex="-1"></a>    <span class="at">simplify =</span> <span class="cn">TRUE</span>, <span class="at">scheme =</span> <span class="st">&#39;drop&#39;</span>)</span></code></pre></div>
+<pre><code>##            converged    AIC  SABIC     HQ   BIC    X2 df     p
+## ITEM_DIC_1      TRUE -2.398 -1.570 -0.814 1.603 4.398  1 0.036
+## ITEM_DIC_2      TRUE  1.058  1.886  2.642 5.059 0.942  1 0.332
+## ITEM_DIC_3      TRUE  0.876  1.705  2.460 4.878 1.124  1 0.289
+## ITEM_DIC_4      TRUE -0.730  0.099  0.854 3.272  2.73  1 0.099
+## ITEM_DIC_5      TRUE  1.756  2.584  3.340 5.757 0.244  1 0.621
+## ITEM_DIC_6      TRUE -0.528  0.301  1.056 3.474 2.528  1 0.112
+## ITEM_DIC_7      TRUE  1.874  2.703  3.458 5.876 0.126  1 0.723</code></pre>
+<p>Per proseguire poi con la stima del DIF relativo alla location. In questo caso, in which.par inseriremo il parametro <em>d</em> (<em>easiness)</em> e non <em>b</em>, poiché è il parametro di default utilizzato da mirt per la location.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb49-1" tabindex="-1"></a><span class="fu">DIF</span>(mod.dif<span class="fl">.1</span>,<span class="at">which.par =</span> <span class="st">&#39;d&#39;</span>,</span>
+<span id="cb49-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb49-2" tabindex="-1"></a>    <span class="at">simplify =</span> <span class="cn">TRUE</span>, <span class="at">scheme =</span> <span class="st">&#39;drop&#39;</span>)</span></code></pre></div>
+<pre><code>##            converged    AIC  SABIC     HQ    BIC    X2 df     p
+## ITEM_DIC_1      TRUE  1.992  2.820  3.576  5.993 0.008  1 0.929
+## ITEM_DIC_2      TRUE -1.055 -0.226  0.529  2.947 3.055  1 0.081
+## ITEM_DIC_3      TRUE -5.016 -4.188 -3.432 -1.015 7.016  1 0.008
+## ITEM_DIC_4      TRUE  1.982  2.810  3.566  5.983 0.018  1 0.893
+## ITEM_DIC_5      TRUE  1.809  2.637  3.393  5.810 0.191  1 0.662
+## ITEM_DIC_6      TRUE -7.690 -6.862 -6.106 -3.689  9.69  1 0.002
+## ITEM_DIC_7      TRUE  1.763  2.591  3.347  5.764 0.237  1 0.626</code></pre>
+<p>Utilizzando come criterio p&lt;.01, nessun item mostrava DIF in a. In b, invece, sia l’item 3 (<span class="math inline">\(X^2\)</span>(1)=6.49 , <em>p</em> = .008) che l’item 6 (<span class="math inline">\(X^2\)</span>(1)=10.32 , <em>p</em> &lt; .001) risultavano avere un valore di <em>p</em> associato minore della soglia fissata .</p>
+</div>
+<div id="secondo-step-della-procedura-di-purificazione" class="section level4 hasAnchor">
+<h4>Secondo step della procedura di purificazione<a href="differential-item-functioning-per-modelli-dicotomici.html#secondo-step-della-procedura-di-purificazione" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Il secondo step della procedura di purificazione serve per verificare l’effettiva presenza di DIF negli item che hanno manifestato DIF al primo step.</p>
+<p>Gli item senza DIF sono denominati item ancora e vengono fissati uguali nei due gruppi. Definiamo quindi un oggetto che contenga gli item ancora. In questo caso, gli item ancora sono il primo, il secondo, il quarto e il quinto. Li inseriremo usando la loro posizione ordinale nell’oggetto denominato <code>item.ancora</code>.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb51-1" tabindex="-1"></a><span class="co">#Definisco gli item ancora </span></span>
+<span id="cb51-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb51-2" tabindex="-1"></a>itemnames <span class="ot">&lt;-</span> <span class="fu">colnames</span>(item.DIF)</span>
+<span id="cb51-3"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb51-3" tabindex="-1"></a>item.ancora<span class="ot">&lt;-</span> itemnames[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>)] <span class="co">#Inserire gli item ancora</span></span>
+<span id="cb51-4"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb51-4" tabindex="-1"></a><span class="fu">print</span>(item.ancora)</span></code></pre></div>
+<pre><code>## [1] &quot;ITEM_DIC_1&quot; &quot;ITEM_DIC_2&quot; &quot;ITEM_DIC_4&quot; &quot;ITEM_DIC_5&quot; &quot;ITEM_DIC_7&quot;</code></pre>
+<p>Proseguiamo poi creando un oggetto che contenga gli item candidati, ovvero gli item che saranno lasciati liberi di variare nei due gruppi per verificare l’eventuale presenza di DIF.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb53-1" tabindex="-1"></a><span class="co">#Definisco gi item da testare (candidati)</span></span>
+<span id="cb53-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb53-2" tabindex="-1"></a>item.candidati<span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">6</span>)  <span class="co">#Inserire gli item candidati</span></span>
+<span id="cb53-3"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb53-3" tabindex="-1"></a><span class="fu">print</span>(item.candidati)</span></code></pre></div>
+<pre><code>## [1] 3 6</code></pre>
+<p>Ora dobbiamo creare un nuovo modello tramite la funzione <code>multiplegroup()</code> con i seguenti vincoli allinterno dell’argomento <code>invariance=c()</code>:</p>
+<ul>
+<li><p>i parametri degli item ancora fissati ad essere uguali nei due gruppi;</p></li>
+<li><p>le medie e le varianze fissate a 0 e 1 nel gruppo di rifermineto e libere di essere stimate nel gruppo focale.</p></li>
+</ul>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb55-1" tabindex="-1"></a>mod.dif<span class="fl">.2</span><span class="ot">&lt;-</span><span class="fu">multipleGroup</span>(item.DIF,<span class="at">model=</span> fct.str.DIF,</span>
+<span id="cb55-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb55-2" tabindex="-1"></a>              <span class="at">itemtype =</span> tipo.mod, </span>
+<span id="cb55-3"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb55-3" tabindex="-1"></a>              <span class="at">group =</span>GRUPPO,<span class="at">SE=</span><span class="cn">TRUE</span>, </span>
+<span id="cb55-4"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb55-4" tabindex="-1"></a>              <span class="at">invariance =</span> <span class="fu">c</span>(item.ancora, <span class="st">&#39;free_means&#39;</span>, <span class="st">&#39;free_var&#39;</span>))</span></code></pre></div>
+<pre><code>## NA values in group removed, along with associated rows in data</code></pre>
+<pre><code>## 
+Iteration: 1, Log-Lik: -1552.108, Max-Change: 0.60151
+Iteration: 2, Log-Lik: -1497.920, Max-Change: 0.41784
+Iteration: 3, Log-Lik: -1487.696, Max-Change: 0.26985
+Iteration: 4, Log-Lik: -1485.040, Max-Change: 0.18088
+Iteration: 5, Log-Lik: -1483.998, Max-Change: 0.12779
+Iteration: 6, Log-Lik: -1483.422, Max-Change: 0.09438
+Iteration: 7, Log-Lik: -1482.794, Max-Change: 0.07145
+Iteration: 8, Log-Lik: -1482.523, Max-Change: 0.04190
+Iteration: 9, Log-Lik: -1482.379, Max-Change: 0.03181
+Iteration: 10, Log-Lik: -1482.246, Max-Change: 0.05183
+Iteration: 11, Log-Lik: -1482.087, Max-Change: 0.02505
+Iteration: 12, Log-Lik: -1482.040, Max-Change: 0.01766
+Iteration: 13, Log-Lik: -1481.997, Max-Change: 0.01905
+Iteration: 14, Log-Lik: -1481.970, Max-Change: 0.01276
+Iteration: 15, Log-Lik: -1481.952, Max-Change: 0.01035
+Iteration: 16, Log-Lik: -1481.944, Max-Change: 0.02110
+Iteration: 17, Log-Lik: -1481.911, Max-Change: 0.00927
+Iteration: 18, Log-Lik: -1481.904, Max-Change: 0.00612
+Iteration: 19, Log-Lik: -1481.899, Max-Change: 0.00509
+Iteration: 20, Log-Lik: -1481.896, Max-Change: 0.00414
+Iteration: 21, Log-Lik: -1481.894, Max-Change: 0.00358
+Iteration: 22, Log-Lik: -1481.893, Max-Change: 0.00767
+Iteration: 23, Log-Lik: -1481.888, Max-Change: 0.00340
+Iteration: 24, Log-Lik: -1481.887, Max-Change: 0.00225
+Iteration: 25, Log-Lik: -1481.887, Max-Change: 0.00184
+Iteration: 26, Log-Lik: -1481.886, Max-Change: 0.00152
+Iteration: 27, Log-Lik: -1481.886, Max-Change: 0.00132
+Iteration: 28, Log-Lik: -1481.886, Max-Change: 0.00285
+Iteration: 29, Log-Lik: -1481.885, Max-Change: 0.00127
+Iteration: 30, Log-Lik: -1481.885, Max-Change: 0.00084
+Iteration: 31, Log-Lik: -1481.885, Max-Change: 0.00069
+Iteration: 32, Log-Lik: -1481.885, Max-Change: 0.00058
+Iteration: 33, Log-Lik: -1481.885, Max-Change: 0.00050
+Iteration: 34, Log-Lik: -1481.885, Max-Change: 0.00108
+Iteration: 35, Log-Lik: -1481.885, Max-Change: 0.00049
+Iteration: 36, Log-Lik: -1481.885, Max-Change: 0.00032
+Iteration: 37, Log-Lik: -1481.884, Max-Change: 0.00027
+Iteration: 38, Log-Lik: -1481.884, Max-Change: 0.00022
+Iteration: 39, Log-Lik: -1481.884, Max-Change: 0.00019
+Iteration: 40, Log-Lik: -1481.884, Max-Change: 0.00042
+Iteration: 41, Log-Lik: -1481.884, Max-Change: 0.00019
+Iteration: 42, Log-Lik: -1481.884, Max-Change: 0.00012
+Iteration: 43, Log-Lik: -1481.884, Max-Change: 0.00011
+Iteration: 44, Log-Lik: -1481.884, Max-Change: 0.00009
+## 
+## Calculating information matrix...</code></pre>
+<p>Procediamo poi con la stima del DIF. In questo caso, useremo lo schema ‘add’ in cui i parametri degli item vengono confrontati fra i due gruppi uno alla volta per poi essere vincolati e procedere con il seguente parametro.</p>
+<p>Come prima, analizziamo il DIF in <em>a</em>.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb58-1" tabindex="-1"></a><span class="co">#DIF in a al secondo step di purificazione</span></span>
+<span id="cb58-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb58-2" tabindex="-1"></a></span>
+<span id="cb58-3"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb58-3" tabindex="-1"></a><span class="fu">DIF</span>(mod.dif<span class="fl">.2</span>,<span class="at">which.par =</span> <span class="st">&#39;a1&#39;</span>,</span>
+<span id="cb58-4"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb58-4" tabindex="-1"></a>    <span class="at">simplify =</span> <span class="cn">TRUE</span>, <span class="at">scheme =</span> <span class="st">&#39;add&#39;</span>, <span class="at">items2test =</span> item.candidati)</span></code></pre></div>
+<pre><code>##            converged   AIC SABIC    HQ   BIC    X2 df     p
+## ITEM_DIC_3      TRUE 1.576 2.404 3.160 5.577 0.424  1 0.515
+## ITEM_DIC_6      TRUE 0.124 0.953 1.708 4.126 1.876  1 0.171</code></pre>
+<p>Per poi proseguire analizzando il DIF in b.</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb60-1" tabindex="-1"></a><span class="co">#DIF in b (d) al secondo step di purificazione</span></span>
+<span id="cb60-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb60-2" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb60-3" tabindex="-1"></a><span class="fu">DIF</span>(mod.dif<span class="fl">.2</span>,<span class="at">which.par =</span> <span class="st">&#39;d&#39;</span>,</span>
+<span id="cb60-4"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb60-4" tabindex="-1"></a>    <span class="at">simplify =</span> <span class="cn">TRUE</span>, <span class="at">scheme =</span> <span class="st">&#39;add&#39;</span>, <span class="at">items2test =</span> item.candidati)</span></code></pre></div>
+<pre><code>##            converged    AIC  SABIC     HQ    BIC    X2 df     p
+## ITEM_DIC_3      TRUE -3.502 -2.674 -1.918  0.499 5.502  1 0.019
+## ITEM_DIC_6      TRUE -5.431 -4.603 -3.847 -1.430 7.431  1 0.006</code></pre>
+<p>Al secondo step di purificazione, solo l’item 6 risultava avere DIF nel parametro b (<span class="math inline">\(X^2\)</span>(1)=7.43 , <em>p</em> &lt; .01), ad indicare che l’item era invariante per genere, poiché risultava essere più facile per i maschi (<em>b</em>=-1.02) rispetto alle femmine (<em>b</em>=-.59).</p>
+<p>Questo può essere anche analizzato graficamente tramite la funzione <code>itemplot()</code> e inserendo nell’argomento <code>item=</code> la posizione ordinale dell’item che si desidera visualizzare.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb62-1" tabindex="-1"></a><span class="fu">itemplot</span>(mod.dif<span class="fl">.2</span>, <span class="at">item=</span><span class="dv">6</span>,   <span class="co">#Inserire l&#39; item da visualizzare</span></span>
+<span id="cb62-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb62-2" tabindex="-1"></a>         <span class="at">type=</span><span class="st">&#39;trace&#39;</span>, <span class="at">theta_lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>)) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+</div>
+<div id="effect-size-del-dif" class="section level4 hasAnchor">
+<h4>Effect size del DIF<a href="differential-item-functioning-per-modelli-dicotomici.html#effect-size-del-dif" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Come ultimo aspetto, è possibile studiare l’effect size del DIF utilizzando la procedura proposta da <a href="https://pubmed.ncbi.nlm.nih.gov/20604592/">Meade (2010)</a>.</p>
+<p><strong>Effect size a livello di item</strong></p>
+<p>In primo luogo si valuta l’effect size a livello di item tramite la funzione <code>empirical_ES()</code>.</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb63-1" tabindex="-1"></a><span class="co">#Effect size al livello degli item</span></span>
+<span id="cb63-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb63-2" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb63-3" tabindex="-1"></a><span class="co">#Indici</span></span>
+<span id="cb63-4"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb63-4" tabindex="-1"></a><span class="fu">empirical_ES</span>(mod.dif<span class="fl">.2</span>)             </span></code></pre></div>
+<pre><code>##          SIDS  UIDS   SIDN  UIDN   ESSD theta.of.max.D  max.D mean.ES.foc mean.ES.ref
+## item.1  0.000 0.000  0.000 0.000  0.000         -1.260  0.000       0.466       0.466
+## item.2  0.000 0.000  0.000 0.000  0.000         -1.260  0.000       0.157       0.157
+## item.3  0.113 0.113  0.107 0.107  0.465          0.429  0.161       0.409       0.297
+## item.4  0.000 0.000  0.000 0.000  0.000         -1.260  0.000       0.516       0.516
+## item.5  0.000 0.000  0.000 0.000  0.000         -1.260  0.000       0.842       0.842
+## item.6 -0.124 0.125 -0.125 0.128 -0.929         -1.260 -0.299       0.641       0.765
+## item.7  0.000 0.000  0.000 0.000  0.000         -1.260  0.000       0.362       0.362</code></pre>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb65-1" tabindex="-1"></a><span class="co">#Grafici</span></span>
+<span id="cb65-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb65-2" tabindex="-1"></a><span class="fu">empirical_ES</span>(mod.dif<span class="fl">.2</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p>Fra gli indici più utilizzati per lo studio del DIF vi sono i seguenti (Per un’analisi approdondita degli indici di Effect Size, consultare la guida di Meade).</p>
+<p><u>Signed Item Difference in the Sample (SIDIS)</u></p>
+<p>Rappresenta la differenza media, nella metrica dell’item, della differenza fra i due gruppi.</p>
+<p><u>Unsigned Item Difference in the Sample (UIDIS)</u></p>
+<p>Rappresenta la differenza media, nella metrica dell’item, della differenza fra i due gruppi in valore assoluto. Il valore assoluto permette di osservare la differenza media impedendo l’effetto cancellazione lungo il tratto di theta.</p>
+<p>Utile è un confronto fra gli indici SIDIS e UIDIS. Se sono uguali, il DIF è di natura uniforme, quindi un gruppo ha livelli più alti dell’altro gruppo lungo tutto il continuum di theta (DIF uniforme). Se UIDIS è maggiore di SIDIS allora c’è effetto cancellazione lungo il continuum di theta, ad indicare che un gruppo non ha sempre punteggi più alti dell’altro (DIF non uniforme) e va analizzato il grafico per comprendere in quale regione di theta è presente il DIF.</p>
+<p><u>Expected score standardized difference (ESSD)</u></p>
+<p>Rappresenta la differenza fra la media degli Espected Score del primo gruppo con quelli del secondo gruppo, divisi per la deviazione standard della distribuzione. Si interpreta con i criteri del <em>d di</em> <a href="https://www.taylorfrancis.com/books/mono/10.4324/9780203771587/statistical-power-analysis-behavioral-sciences-jacob-cohen">Cohen (1988)</a> .</p>
+<p><strong>Effect size a livello di test</strong></p>
+<p>Per valutare l’impatto complessvo del DIF sulla scala, possiamo utilizzare degli indici forniti sempre da Meade (2010). Useremo, come sopra, la funzione <code>empirical_ES()</code>, introducendo però la voce <code>DIF=FALSE</code>.</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb66-1" tabindex="-1"></a><span class="co">#Effect size al livello del test</span></span>
+<span id="cb66-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb66-2" tabindex="-1"></a></span>
+<span id="cb66-3"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb66-3" tabindex="-1"></a><span class="co">#ndici</span></span>
+<span id="cb66-4"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb66-4" tabindex="-1"></a><span class="fu">empirical_ES</span>(mod.dif<span class="fl">.2</span>, <span class="at">DIF =</span> <span class="cn">FALSE</span>)     </span></code></pre></div>
+<pre><code>##           Effect Size        Value
+## 1                STDS -0.010939057
+## 2                UTDS  0.237892250
+## 3              UETSDS  0.092202120
+## 4               ETSSD -0.007087746
+## 5         Starks.DTFR -0.017710214
+## 6               UDTFR  0.235673763
+## 7              UETSDN  0.094939773
+## 8 theta.of.max.test.D -1.260153402
+## 9           Test.Dmax -0.251737668</code></pre>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb68-1" tabindex="-1"></a><span class="co">#Grafici</span></span>
+<span id="cb68-2"><a href="differential-item-functioning-per-modelli-dicotomici.html#cb68-2" tabindex="-1"></a><span class="fu">empirical_ES</span>(mod.dif<span class="fl">.2</span>, <span class="at">DIF =</span> <span class="cn">FALSE</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p>I tre indici presentati di seguito sono l’applicazione di quanto appena visto per l’item a livello di test.</p>
+<p><u>Signed Test Difference in the Sample (STDIS)</u></p>
+<p>Differenza media, nella metrica del test, nella risposta fra i due gruppi.</p>
+<p><u>Unsigned Test Difference in the Sample (UTDIS)</u></p>
+<p>Differenza media, nella metrica del test, nella risposta fra i due gruppi senza l’effetto cancellazione.</p>
+<p>Se messa in confronto con STIDS, è possibile cogliere la presenza di DIF uniforme/ non uniforme a livello di test.</p>
+<p><u>Expected test score standardized difference (ETSSD)</u></p>
+<p>Rappresenta la differenza fra la media degli Espected Test Score nei due gruppi, diviso per la deviazione standard. Si interpreta con i criteri del <em>d di</em> <a href="https://www.taylorfrancis.com/books/mono/10.4324/9780203771587/statistical-power-analysis-behavioral-sciences-jacob-cohen">Cohen (1988)</a> .</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="calibrazione-di-strumenti-unidimensionali-con-item-dicotomici.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="scoring-di-strumenti-unidimensionali-con-item-dicotomici.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/04-DIF-dicotomici.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
